@@ -1189,7 +1189,8 @@ namespace XIVSlothCombo.Combos
         #region Advanced Single Target Combo
         [AutoAction(false, false)]
         [ReplaceSkill(DRK.HardSlash)]
-        [CustomComboInfo("Advanced Mode - Single Target", "Replace Hard Slash with a customizable all-in-one button rotation.\nFeatures can be toggled on or off to suit your playstyle.", DRK.JobID)]
+        [CustomComboInfo("Advanced Mode - Single Target", "Replace Hard Slash with a customizable all-in-one button rotation.\n" +
+            "Features can be toggled on or off to suit your playstyle.", DRK.JobID)]
         DRK_ST_Combo = 5001,
 
         #region Buff Options
@@ -1209,7 +1210,7 @@ namespace XIVSlothCombo.Combos
 
         [ParentCombo(DRK_ST_Combo)]
         [ConflictingCombos(DRK_oGCD)]
-        [CustomComboInfo("Cooldowns Option", "Collection of cooldowns to add to the rotation.", DRK.JobID)]
+        [CustomComboInfo("Cooldowns Options", "Collection of cooldowns to add to the rotation.", DRK.JobID)]
         DRK_ST_CDs = 5004,
 
         #region Living Shadow Options
@@ -1252,15 +1253,41 @@ namespace XIVSlothCombo.Combos
         #region Mana Overcap Options
 
         [ParentCombo(DRK_ST_Combo)]
-        [CustomComboInfo("Edge of Shadow Overcap Option", "Uses Edge of Shadow if you are above 8,500 mana, Darkside is about to expire (10sec or less), or if you have Dark Arts.", DRK.JobID)]
+        [CustomComboInfo("Edge of Shadow Overcap Option", "Uses Edge of Shadow if you are above 8,500 mana, Darkside is about to expire (<10s), or if you have Dark Arts in Burst.", DRK.JobID)]
         DRK_ST_ManaOvercap = 5011,
 
         [ParentCombo(DRK_ST_ManaOvercap)]
         [CustomComboInfo("Edge of Shadow Burst Option", "Pools Edge of Shadow for even minute burst windows, and then uses them until chosen MP limit is reached.", DRK.JobID)]
         DRK_ST_ManaSpenderPooling = 5012,
 
+        [ParentCombo(DRK_ST_ManaOvercap)]
+        [CustomComboInfo("Dark Arts Drop Prevention", "Will spend Dark Arts if your own The Blackest Night shield is active on you", DRK.JobID)]
+        DRK_ST_DarkArtsDropPrevention = 5032,
+
         #endregion
-        // Last value = 5012
+        // Last value = 5032
+
+        #region Mitigation Options
+
+        [ParentCombo(DRK_ST_Combo)]
+        [CustomComboInfo("Mitigation Options", "Collection of Mitigations to add to the rotation.", DRK.JobID)]
+        DRK_ST_Mitigation = 5033,
+
+        [ParentCombo(DRK_ST_Mitigation)]
+        [CustomComboInfo("The Blackest Night Option", "Uses The Blackest Night based on Health Remaining.\n" +
+              "(Note: makes no attempt to ensure shield will break)", DRK.JobID)]
+        DRK_ST_TBN = 5034,
+
+        [ParentCombo(DRK_ST_Mitigation)]
+        [CustomComboInfo("Shadowed Vigil Option", "Uses Shadowed Vigil based on Health Remaining.", DRK.JobID)]
+        DRK_ST_ShadowedVigil = 5035,
+
+        [ParentCombo(DRK_ST_Mitigation)]
+        [CustomComboInfo("Living Dead Option", "Uses Living Dead based on Health Remaining.", DRK.JobID)]
+        DRK_ST_LivingDead = 5036,
+
+        #endregion
+        // Last value = 5036
 
         [ParentCombo(DRK_ST_Combo)]
         [CustomComboInfo("Bloodspiller Option", "Adds Bloodspiller to the rotation when Delirium is active.", DRK.JobID)]
@@ -1299,7 +1326,7 @@ namespace XIVSlothCombo.Combos
         #region Cooldowns
 
         [ParentCombo(DRK_AoE_Combo)]
-        [CustomComboInfo("Cooldowns Option", "Collection of cooldowns to add to the rotation.", DRK.JobID)]
+        [CustomComboInfo("Cooldowns Options", "Collection of cooldowns to add to the rotation.", DRK.JobID)]
         DRK_AoE_CDs = 5019,
 
         [ParentCombo(DRK_AoE_CDs)]
@@ -1331,15 +1358,36 @@ namespace XIVSlothCombo.Combos
         // Last value = 5024
 
         [ParentCombo(DRK_AoE_Combo)]
-        [CustomComboInfo("Flood of Shadow Overcap Option", "Uses Flood of Shadow if you are above 8.5k mana, Darkside is about to expire (10sec or less), or if you have Dark Arts.", DRK.JobID)]
+        [CustomComboInfo("Flood of Shadow Overcap Option", "Uses Flood of Shadow if you are above 8,500 mana, Darkside is about to expire (<10s), or if you have Dark Arts.", DRK.JobID)]
         DRK_AoE_ManaOvercap = 5025,
+
+        #region Mitigation Options
+
+        [ParentCombo(DRK_AoE_Combo)]
+        [CustomComboInfo("Mitigation Options", "Collection of Mitigations to add to the rotation.", DRK.JobID)]
+        DRK_AoE_Mitigation = 5037,
+
+        [ParentCombo(DRK_AoE_Mitigation)]
+        [CustomComboInfo("The Blackest Night Option", "Adds The Blackest Night to the rotation.", DRK.JobID)]
+        DRK_AoE_TBN = 5038,
+
+        [ParentCombo(DRK_AoE_Mitigation)]
+        [CustomComboInfo("Shadowed Vigil Option", "Uses Shadowed Vigil based on Health Remaining.", DRK.JobID)]
+        DRK_AoE_ShadowedVigil = 5039,
+
+        [ParentCombo(DRK_AoE_Mitigation)]
+        [CustomComboInfo("Living Dead Option", "Uses Living Dead based on your and your enemy's Remaining Health.", DRK.JobID)]
+        DRK_AoE_LivingDead = 5040,
+
+        #endregion
+        // Last value = 5040
 
         [ParentCombo(DRK_AoE_Combo)]
         [CustomComboInfo("Blood Gauge Overcap Option", "Adds Quietus to the rotation when at 90 blood gauge or higher.", DRK.JobID)]
         DRK_AoE_BloodOvercap = 5026,
 
         #endregion
-        // Last value = 5026
+        // Last value = 5038
 
         #region oGCD Feature
 
@@ -2120,7 +2168,8 @@ namespace XIVSlothCombo.Combos
         MNK_AOE_SimpleMode = 9003,
 
         #region Monk Advanced ST
-        
+
+        [AutoAction(false, false)]
         [ReplaceSkill([MNK.Bootshine])]
         [ConflictingCombos(MNK_ST_BeastChakras, MNK_ST_SimpleMode)]
         [CustomComboInfo("Advanced Mode - Single Target", "Replaces Bootshine with a one-button full single target rotation.\nThese features are ideal if you want to customize the rotation.", MNK.JobID)]
@@ -2182,6 +2231,7 @@ namespace XIVSlothCombo.Combos
 
         #region Monk Advanced AOE
 
+        [AutoAction(true, false)]
         [ReplaceSkill([MNK.ArmOfTheDestroyer, MNK.ShadowOfTheDestroyer])]
         [ConflictingCombos(MNK_AOE_SimpleMode)]
         [CustomComboInfo("Advanced Mode - AoE", "Replaces Arm of the Destroyer with a one-button full single target rotation.\nThese features are ideal if you want to customize the rotation.", MNK.JobID)]

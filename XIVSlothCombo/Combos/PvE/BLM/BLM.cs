@@ -4,7 +4,6 @@ using XIVSlothCombo.CustomComboNS;
 using XIVSlothCombo.Data;
 using XIVSlothCombo.Extensions;
 using static XIVSlothCombo.CustomComboNS.Functions.CustomComboFunctions;
-using static XIVSlothCombo.Combos.JobHelpers.BLM;
 
 namespace XIVSlothCombo.Combos.PvE;
 

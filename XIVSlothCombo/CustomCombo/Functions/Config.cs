@@ -132,8 +132,21 @@ namespace XIVSlothCombo.CustomComboNS.Functions
         }
     }
 
-    internal class UserBoolArray(string v) : UserData(v)
+    internal class UserBoolArray : UserData
     {
+        // Constructor with only the string parameter
+        public UserBoolArray(string v) : this(v, []) { }
+
+        // Constructor with both string and bool array parameters
+        public UserBoolArray(string v, bool[] defaults) : base(v)
+        {
+            if (!PluginConfiguration.CustomBoolArrayValues.ContainsKey(this.pName))
+            {
+                PluginConfiguration.SetCustomBoolArrayValue(this.pName, defaults);
+                Service.Configuration.Save();
+            }
+        }
+
         public int Count => PluginConfiguration.GetCustomBoolArrayValue(this.pName).Length;
         public static implicit operator bool[](UserBoolArray o) => PluginConfiguration.GetCustomBoolArrayValue(o.pName);
         public bool this[int index]
@@ -156,7 +169,6 @@ namespace XIVSlothCombo.CustomComboNS.Functions
         {
             var array = PluginConfiguration.GetCustomBoolArrayValue(this.pName);
             return array.All(predicate);
-
         }
     }
 

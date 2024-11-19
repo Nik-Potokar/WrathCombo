@@ -10,6 +10,7 @@ using XIVSlothCombo.Combos;
 using XIVSlothCombo.Combos.PvP;
 using XIVSlothCombo.Core;
 using XIVSlothCombo.CustomComboNS.Functions;
+using XIVSlothCombo.Data;
 using XIVSlothCombo.Services;
 
 
@@ -1101,6 +1102,183 @@ namespace XIVSlothCombo.Window.Functions
             ImGui.NextColumn();
             ImGui.Columns(1);
             ImGui.Spacing();
+        }
+
+        /// <summary>
+        ///     Draws the correct multi choice checkbox method based on the given
+        ///     <see cref="ContentCheck.ListSet"/>.
+        /// </summary>
+        /// <param name="config">
+        ///     The <see cref="UserBoolArray"/> config variable for this setting.
+        /// </param>
+        /// <param name="configListSet">
+        ///     Which difficulty list set to draw.
+        /// </param>
+        /// <param name="overrideText">
+        ///     Optional text to override the default description.
+        /// </param>
+        /// <seealso cref="DrawHalvedDifficultyMultiChoice"/>
+        /// <seealso cref="DrawCasualVSHardDifficultyMultiChoice"/>
+        /// <seealso cref="DrawCoredDifficultyMultiChoice"/>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public static void DrawDifficultyMultiChoice
+            (string config, ContentCheck.ListSet configListSet, string overrideText = "")
+        {
+            switch (configListSet)
+            {
+                case ContentCheck.ListSet.Halved:
+                    DrawHalvedDifficultyMultiChoice(config, overrideText);
+                    break;
+                case ContentCheck.ListSet.CasualVSHard:
+                    DrawCasualVSHardDifficultyMultiChoice(config, overrideText);
+                    break;
+                case ContentCheck.ListSet.Cored:
+                    DrawCoredDifficultyMultiChoice(config, overrideText);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(configListSet), configListSet, null);
+            }
+        }
+
+        /// <summary>
+        ///     Draws a multi choice checkbox in a horizontal configuration,
+        ///     with values for Content Difficulty filtering's Halved Difficulty
+        ///     list set.
+        /// </summary>
+        /// <value>
+        ///     <c>[0]true</c> if <see cref="ContentCheck.BottomHalfContent"/>
+        ///     is enabled.<br/>
+        ///     <c>[1]true</c> if <see cref="ContentCheck.TopHalfContent"/>
+        ///     is enabled.
+        /// </value>
+        /// <param name="config">
+        ///     The <see cref="UserBoolArray"/> config variable for this setting.
+        /// </param>
+        /// <param name="overrideText">
+        ///     Optional text to override the default description.
+        /// </param>
+        /// <seealso cref="ContentCheck.IsInBottomHalfContent"/>
+        /// <seealso cref="ContentCheck.IsInTopHalfContent"/>
+        private static void DrawHalvedDifficultyMultiChoice
+            (string config, string overrideText = "")
+        {
+            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudYellow);
+            ImGui.Indent();
+            ImGui.TextUnformatted(overrideText.IsNullOrEmpty()
+                ? "Select what difficulty the above should apply to:"
+                : overrideText);
+            ImGui.PopStyleColor();
+            ImGui.Unindent();
+
+            DrawHorizontalMultiChoice(
+                config, "Easiest Content",
+                ContentCheck.BottomHalfContentList,
+                totalChoices: 2, choice: 0,
+                descriptionColor: ImGuiColors.DalamudYellow
+            );
+            DrawHorizontalMultiChoice(
+                config, "Hardest Content",
+                ContentCheck.TopHalfContentList,
+                totalChoices: 2, choice: 1,
+                descriptionColor: ImGuiColors.DalamudYellow
+            );
+        }
+
+        /// <summary>
+        ///     Draws a multi choice checkbox in a horizontal configuration,
+        ///     with values for Content Difficulty filtering's Casual vs Hard
+        ///     difficulty list set.
+        /// </summary>
+        /// <value>
+        ///     <c>[0]true</c> if <see cref="ContentCheck.CasualContent"/>
+        ///     is enabled.<br/>
+        ///     <c>[1]true</c> if <see cref="ContentCheck.HardContent"/>
+        ///     is enabled.
+        /// </value>
+        /// <param name="config">
+        ///     The <see cref="UserBoolArray"/> config variable for this setting.
+        /// </param>
+        /// <param name="overrideText">
+        ///     Optional text to override the default description.
+        /// </param>
+        /// <seealso cref="ContentCheck.IsInCasualContent"/>
+        /// <seealso cref="ContentCheck.IsInHardContent"/>
+        private static void DrawCasualVSHardDifficultyMultiChoice
+            (string config, string overrideText = "")
+        {
+            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudYellow);
+            ImGui.Indent();
+            ImGui.TextUnformatted(overrideText.IsNullOrEmpty()
+                ? "Select what difficulty the above should apply to:"
+                : overrideText);
+            ImGui.PopStyleColor();
+            ImGui.Unindent();
+
+            DrawHorizontalMultiChoice(
+                config, "Casual Content",
+                ContentCheck.CasualContentList,
+                totalChoices: 2, choice: 0,
+                descriptionColor: ImGuiColors.DalamudYellow
+            );
+            DrawHorizontalMultiChoice(
+                config, "'Hard' Content",
+                ContentCheck.HardContentList,
+                totalChoices: 2, choice: 1,
+                descriptionColor: ImGuiColors.DalamudYellow
+            );
+        }
+
+        /// <summary>
+        ///     Draws a multi choice checkbox in a horizontal configuration,
+        ///     with values for Content Difficulty filtering's Cored Difficulty
+        ///     list set.
+        /// </summary>
+        /// <value>
+        ///     <c>[0]true</c> if <see cref="ContentCheck.SoftCoreContent"/>
+        ///     is enabled.<br/>
+        ///     <c>[1]true</c> if <see cref="ContentCheck.MidCoreContent"/>
+        ///     is enabled.<br/>
+        ///     <c>[2]true</c> if <see cref="ContentCheck.HardCoreContent"/>
+        ///     is enabled.
+        /// </value>
+        /// <param name="config">
+        ///     The <see cref="UserBoolArray"/> config variable for this setting.
+        /// </param>
+        /// <param name="overrideText">
+        ///     Optional text to override the default description.
+        /// </param>
+        /// <seealso cref="ContentCheck.IsInSoftCoreContent"/>
+        /// <seealso cref="ContentCheck.IsInMidCoreContent"/>
+        /// <seealso cref="ContentCheck.IsInHardCoreContent"/>
+        private static void DrawCoredDifficultyMultiChoice
+            (string config, string overrideText = "")
+        {
+            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudYellow);
+            ImGui.Indent();
+            ImGui.TextUnformatted(overrideText.IsNullOrEmpty()
+                ? "Select what difficulty the above should apply to:"
+                : overrideText);
+            ImGui.PopStyleColor();
+            ImGui.Unindent();
+
+            DrawHorizontalMultiChoice(
+                config, "SoftCore Content",
+                ContentCheck.SoftCoreContentList,
+                totalChoices: 3, choice: 0,
+                descriptionColor: ImGuiColors.DalamudYellow
+            );
+            DrawHorizontalMultiChoice(
+                config, "MidCore Content",
+                ContentCheck.MidCoreContentList,
+                totalChoices: 3, choice: 1,
+                descriptionColor: ImGuiColors.DalamudYellow
+            );
+            DrawHorizontalMultiChoice(
+                config, "HardCore Content",
+                ContentCheck.HardCoreContentList,
+                totalChoices: 3, choice: 2,
+                descriptionColor: ImGuiColors.DalamudYellow
+            );
         }
 
         internal static void DrawPriorityInput(UserIntArray config, int maxValues, int currentItem, string customLabel = "")
