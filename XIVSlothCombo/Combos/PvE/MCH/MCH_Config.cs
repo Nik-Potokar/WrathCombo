@@ -1,3 +1,4 @@
+using XIVSlothCombo.Combos.PvP;
 using XIVSlothCombo.CustomComboNS.Functions;
 using XIVSlothCombo.Data;
 using static XIVSlothCombo.Window.Functions.UserConfig;
@@ -112,6 +113,12 @@ internal partial class MCH
                 case CustomComboPreset.MCH_ST_Adv_Hypercharge:
                     DrawSliderInt(0, 15, MCH_ST_HyperchargeHP,
                         "Stop Using When Target HP% is at or Below (Set to 0 to Disable This Check)");
+
+                    break;
+
+                case CustomComboPreset.MCHPvP_BurstMode_MarksmanSpite:
+                    DrawSliderInt(0, 36000, MCHPvP.Config.MCHPVP_MarksmanSpite,
+                        "Use Marksman's Spite when the target is below set HP");
 
                     break;
             }
