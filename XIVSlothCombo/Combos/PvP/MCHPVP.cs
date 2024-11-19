@@ -8,7 +8,7 @@ namespace XIVSlothCombo.Combos.PvP
 
         public const uint
             BlastCharge = 29402,
-            HeatBlast = 29403,
+            BlazingShot = 41468,
             Scattergun = 29404,
             Drill = 29405,
             BioBlaster = 29406,
@@ -18,7 +18,8 @@ namespace XIVSlothCombo.Combos.PvP
             BishopTurret = 29412,
             AetherMortar = 29413,
             Analysis = 29414,
-            MarksmanSpite = 29415;
+            MarksmanSpite = 29415,
+            FullMetalField = 41469;
 
         public static class Buffs
         {
@@ -38,6 +39,13 @@ namespace XIVSlothCombo.Combos.PvP
                 Wildfire = 1323;
         }
 
+        public static class Config
+        {
+            public const string
+                MCHPVP_MarksmanSpite = "MCHPVP_MarksmanSpite";
+
+        }
+
         internal class MCHPvP_BurstMode : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MCHPvP_BurstMode;
@@ -51,33 +59,57 @@ namespace XIVSlothCombo.Combos.PvP
                     var bigDamageStacks = GetRemainingCharges(OriginalHook(Drill));
                     var overheated = HasEffect(Buffs.Overheated);
 
-                    if (canWeave && HasEffect(Buffs.Overheated) && IsOffCooldown(Wildfire))
-                        return OriginalHook(Wildfire);
-
-                    if (overheated)
-                        return OriginalHook(HeatBlast);
-
-                    if ((HasEffect(Buffs.DrillPrimed) ||
-                        (HasEffect(Buffs.ChainSawPrimed) && !IsEnabled(CustomComboPreset.MCHPvP_BurstMode_AltAnalysis)) ||
-                        (HasEffect(Buffs.AirAnchorPrimed) && IsEnabled(CustomComboPreset.MCHPvP_BurstMode_AltAnalysis))) &&
-                        !HasEffect(Buffs.Analysis) && analysisStacks > 0 && (!IsEnabled(CustomComboPreset.MCHPvP_BurstMode_AltDrill)
-                        || IsOnCooldown(Wildfire)) && !canWeave && !overheated && bigDamageStacks > 0)
-                        return OriginalHook(Analysis);
-
-                    if (bigDamageStacks > 0)
+                    if (!PvPCommon.IsImmuneToDamage())
                     {
-                        if (HasEffect(Buffs.DrillPrimed))
-                            return OriginalHook(Drill);
+                        // MarksmanSpite execute condition - todo add config
+                        if (IsEnabled(CustomComboPreset.MCHPvP_BurstMode_MarksmanSpite) && EnemyHealthCurrentHp() < GetOptionValue(Config.MCHPVP_MarksmanSpite) && CanUseAction(MarksmanSpite))
+                            return MarksmanSpite;
 
-                        if (HasEffect(Buffs.BioblasterPrimed) && GetTargetDistance() <= 12)
-                            return OriginalHook(BioBlaster);
+                        
+                        if (IsEnabled(CustomComboPreset.MCHPvP_BurstMode_Wildfire) && canWeave && overheated && IsOffCooldown(Wildfire))
+                            return OriginalHook(Wildfire);
 
-                        if (HasEffect(Buffs.AirAnchorPrimed))
-                            return OriginalHook(AirAnchor);
 
-                        if (HasEffect(Buffs.ChainSawPrimed))
-                            return OriginalHook(ChainSaw);
+                        // FullMetalField condition when not overheated or if overheated and FullMetalField is off cooldown
+                        if (IsEnabled(CustomComboPreset.MCHPvP_BurstMode_FullMetalField) && overheated && IsOffCooldown(FullMetalField))
+                            return FullMetalField;
+
+                        // If overheated, BlazingShot is the next action
+                        if (IsEnabled(CustomComboPreset.MCHPvP_BurstMode_BlazingShot) && overheated)
+                            return OriginalHook(BlazingShot);
+
+                        // Check if primed buffs and analysis conditions are met
+                        bool hasPrimedBuffs = HasEffect(Buffs.DrillPrimed) ||
+                                              (HasEffect(Buffs.ChainSawPrimed) && !IsEnabled(CustomComboPreset.MCHPvP_BurstMode_AltAnalysis)) ||
+                                              (HasEffect(Buffs.AirAnchorPrimed) && IsEnabled(CustomComboPreset.MCHPvP_BurstMode_AltAnalysis));
+
+                        if(IsEnabled(CustomComboPreset.MCHPvP_BurstMode_Analysis))
+                        {
+                            if (hasPrimedBuffs && !HasEffect(Buffs.Analysis) && analysisStacks > 0 &&
+                                (!IsEnabled(CustomComboPreset.MCHPvP_BurstMode_AltDrill) || IsOnCooldown(Wildfire)) &&
+                                !canWeave && !overheated && bigDamageStacks > 0)
+                            {
+                                return OriginalHook(Analysis);
+                            }
+                        }
+
+                        // BigDamageStacks logic with checks for primed buffs
+                        if (bigDamageStacks > 0)
+                        {
+                            if (IsEnabled(CustomComboPreset.MCHPvP_BurstMode_Drill) && HasEffect(Buffs.DrillPrimed))
+                                return OriginalHook(Drill);
+
+                            if (IsEnabled(CustomComboPreset.MCHPvP_BurstMode_BioBlaster) && HasEffect(Buffs.BioblasterPrimed) && GetTargetDistance() <= 12)
+                                return OriginalHook(BioBlaster);
+
+                            if (IsEnabled(CustomComboPreset.MCHPvP_BurstMode_AirAnchor) && HasEffect(Buffs.AirAnchorPrimed))
+                                return OriginalHook(AirAnchor);
+
+                            if (IsEnabled(CustomComboPreset.MCHPvP_BurstMode_ChainSaw) && HasEffect(Buffs.ChainSawPrimed))
+                                return OriginalHook(ChainSaw);
+                        }
                     }
+
                 }
 
                 return actionID;

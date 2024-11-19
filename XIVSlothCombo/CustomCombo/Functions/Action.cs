@@ -220,5 +220,17 @@ namespace XIVSlothCombo.CustomComboNS.Functions
         /// Returns the last combo action.
         /// </summary>
         public unsafe static uint ComboAction => ActionManager.Instance()->Combo.Action;
+
+        /// <summary>
+        /// Checks the curent status of the action
+        /// </summary>
+        /// <param name="actionID"></param>
+        /// <returns></returns>
+        public static unsafe uint CheckActionStatus(uint actionID) => ActionManager.Instance() is null ? uint.MaxValue : ActionManager.Instance()->GetActionStatus(ActionType.Action, actionID);
+
+        internal unsafe static bool CanUseAction(uint actionID, uint targetID = 0xE000_0000)
+        {
+            return ActionManager.Instance()->GetActionStatus(ActionType.Action, actionID, targetID, false, true) == 0 && CheckActionStatus(actionID) is 0;
+        }
     }
 }

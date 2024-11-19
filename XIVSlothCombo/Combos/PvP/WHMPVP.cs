@@ -18,7 +18,8 @@ namespace XIVSlothCombo.Combos.PvP
         internal class Buffs
         {
             internal const ushort
-                Cure3Ready = 3083;
+                Cure3Ready = 3083,
+                SacredSight = 4326;
         }
 
         internal class WHMPvP_Burst : CustomCombo
@@ -29,16 +30,24 @@ namespace XIVSlothCombo.Combos.PvP
             {
                 if (actionID is Glare)
                 {
-                    if (!TargetHasEffectAny(PvPCommon.Buffs.Guard))
+                    if (!PvPCommon.IsImmuneToDamage())
                     {
+                        // Afflatus Misery if enabled and off cooldown
                         if (IsEnabled(CustomComboPreset.WHMPvP_Afflatus_Misery) && IsOffCooldown(AfflatusMisery))
                             return AfflatusMisery;
 
+                        // Seraph Strike if Sacred Sight is active
+                        if (IsEnabled(CustomComboPreset.WHMPvP_Glare4) && HasEffect(Buffs.SacredSight))
+                            return OriginalHook(SeraphStrike);
+
+                        // Weave conditions
                         if (CanWeave(actionID))
                         {
-                            if (IsEnabled(CustomComboPreset.WHMPvP_Mirace_of_Nature) && IsOffCooldown(MiracleOfNature))
+                            // Miracle of Nature if enabled and off cooldown and inrange 
+                            if (IsEnabled(CustomComboPreset.WHMPvP_Mirace_of_Nature) && IsOffCooldown(MiracleOfNature) && InActionRange(MiracleOfNature))
                                 return MiracleOfNature;
 
+                            // Seraph Strike if enabled and off cooldown
                             if (IsEnabled(CustomComboPreset.WHMPvP_Seraph_Strike) && IsOffCooldown(SeraphStrike))
                                 return SeraphStrike;
                         }

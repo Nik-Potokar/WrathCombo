@@ -76,12 +76,12 @@ namespace XIVSlothCombo.Combos.PvP
                             return OriginalHook(CuringWaltz);
 
                         // Fan Dance weave
-                        if (IsOffCooldown(FanDance) && distance < 13) // 2y below max to avoid waste
+                        if (IsEnabled(CustomComboPreset.DNCPvP_BurstMode_FanDance) && IsOffCooldown(FanDance) && distance < 13) // 2y below max to avoid waste
                             return OriginalHook(FanDance);
                     }
 
                     // Starfall Dance
-                    if (!starfallDance && starfallDanceReady && distance < 20) // 5y below max to avoid waste
+                    if (IsEnabled(CustomComboPreset.DNCPvP_BurstMode_StarfallDance) && !starfallDance && starfallDanceReady && distance < 20) // 5y below max to avoid waste
                         return OriginalHook(StarfallDance);
                 }
 

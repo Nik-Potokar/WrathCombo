@@ -17,14 +17,23 @@ namespace XIVSlothCombo.Combos.PvP
             Slipstream = 29669,
             RadiantAegis = 29670,
             MountainBuster = 29671,
-            Fester = 29672,
-            EnkindleBahamut = 29674,
+            Necrotize = 41483,
+            DeathFlare = 41484,
             Megaflare = 29675,          // unused
             Wyrmwave = 29676,           // unused
             AkhMorn = 29677,            // unused
             EnkindlePhoenix = 29679,
             ScarletFlame = 29681,       // unused
-            Revelation = 29682;         // unused
+            Revelation = 29682,         // unused
+            Ruin4 = 41482,
+            BrandofPurgatory = 41485;
+
+        internal class Buffs
+        {
+            internal const ushort
+                FurtherRuin = 4399;
+
+        }
 
         public static class Config
         {
@@ -47,58 +56,45 @@ namespace XIVSlothCombo.Combos.PvP
                     bool bahamutBurst = OriginalHook(Ruin3) is AstralImpulse;
                     bool phoenixBurst = OriginalHook(Ruin3) is FountainOfFire;
                     double playerHP = PlayerHealthPercentageHp();
-                    double targetHP = GetTargetHPPercent();
-                    bool enemyGuarded = TargetHasEffectAny(PvPCommon.Buffs.Guard);
                     bool canBind = !TargetHasEffectAny(PvPCommon.Debuffs.Bind);
                     int radiantThreshold = PluginConfiguration.GetCustomIntValue(Config.SMNPvP_RadiantAegisThreshold);
-                    int festerThreshold = PluginConfiguration.GetCustomIntValue(Config.SMNPvP_FesterThreshold);
                     #endregion
 
-                    if (canWeave)
+                    if (!PvPCommon.IsImmuneToDamage())
                     {
-                        // Radiant Aegis
-                        if (IsEnabled(CustomComboPreset.SMNPvP_BurstMode_RadiantAegis) &&
-                            IsOffCooldown(RadiantAegis) && playerHP <= radiantThreshold)
-                            return RadiantAegis;
-
-                        // Fester
-                        if (HasCharges(Fester) && targetHP <= festerThreshold && !enemyGuarded &&
-                            !(phoenixBurst || bahamutBurst)) // Lazy method for correct (?) priority
-                            return Fester;
-                    }
-
-                    // Phoenix & Bahamut bursts
-                    if (phoenixBurst || bahamutBurst)
-                    {
-                        if (!enemyGuarded && canWeave)
+                        if (canWeave)
                         {
-                            if (IsOffCooldown(EnkindlePhoenix) && phoenixBurst)
-                                return EnkindlePhoenix;
-                            if (IsOffCooldown(EnkindleBahamut) && bahamutBurst)
-                                return EnkindleBahamut;
-                            if (HasCharges(Fester) && targetHP <= festerThreshold)
-                                return Fester;
-                            if (IsOffCooldown(MountainBuster))
-                                return MountainBuster;
+                            // Radiant Aegis
+                            if (IsEnabled(CustomComboPreset.SMNPvP_BurstMode_RadiantAegis) &&
+                                IsOffCooldown(RadiantAegis) && playerHP <= radiantThreshold)
+                                return RadiantAegis;
+
+                            // Phoenix & Bahamut bursts
+                            if (IsEnabled(CustomComboPreset.SMNPvP_BurstMode_BrandofPurgatory) && phoenixBurst && IsOffCooldown(BrandofPurgatory))
+                                return BrandofPurgatory;
+
+                            if (IsEnabled(CustomComboPreset.SMNPvP_BurstMode_DeathFlare) && bahamutBurst && IsOffCooldown(DeathFlare))
+                                return DeathFlare;
+
+                            if (IsEnabled(CustomComboPreset.SMNPvP_BurstMode_Necrotize) && GetRemainingCharges(Necrotize) > 0 && !HasEffect(Buffs.FurtherRuin))
+                                return Necrotize;
                         }
-                    }
 
-                    // Titan
-                    if (IsOffCooldown(MountainBuster) && canWeave && canBind && !enemyGuarded)
-                        return MountainBuster;
-
-                    // Ifrit
-                    if (!enemyGuarded)
-                    {
-                        if (OriginalHook(CrimsonCyclone) is CrimsonStrike)
+                        // Ifrit (check CrimsonCyclone conditions)
+                        if (IsEnabled(CustomComboPreset.SMNPvP_BurstMode_CrimsonStrike) && OriginalHook(CrimsonCyclone) is CrimsonStrike)
                             return CrimsonStrike;
-                        if (IsOffCooldown(CrimsonCyclone) && InMeleeRange())
-                            return CrimsonCyclone;
-                    }
 
-                    // Garuda
-                    if (IsOffCooldown(Slipstream))
-                        return Slipstream;
+                        if (IsEnabled(CustomComboPreset.SMNPvP_BurstMode_CrimsonCyclone) && IsOffCooldown(CrimsonCyclone))
+                            return CrimsonCyclone;
+
+                        // Titan
+                        if (IsEnabled(CustomComboPreset.SMNPvP_BurstMode_MountainBuster) &&IsOffCooldown(MountainBuster) && InActionRange(MountainBuster))
+                            return MountainBuster;
+
+                        // Garuda (check Slipstream cooldown)
+                        if (IsEnabled(CustomComboPreset.SMNPvP_BurstMode_Slipstream) && IsOffCooldown(Slipstream) && !IsMoving)
+                            return Slipstream;
+                    }
                 }
 
                 return actionID;

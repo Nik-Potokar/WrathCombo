@@ -73,7 +73,6 @@ namespace XIVSlothCombo.Combos.PvP
                     float enshroudStacks = GetBuffStacks(Buffs.Enshrouded);
                     float immortalStacks = GetBuffStacks(Buffs.ImmortalSacrifice);
                     int immortalThreshold = PluginConfiguration.GetCustomIntValue(Config.RPRPvP_ImmortalStackThreshold);
-                    bool soulsow = HasEffect(Buffs.Soulsow);
                     #endregion
 
                     // Arcane Cirle Option
@@ -81,7 +80,7 @@ namespace XIVSlothCombo.Combos.PvP
                         && arcaneReady && playerHP <= arcaneThreshold)
                         return ArcaneCrest;
 
-                    if (!enemyGuarded) // Guard check on target
+                    if (!PvPCommon.IsImmuneToDamage()) // Guard check on target
                     {
                         // Plentiful Harvest Opener
                         if (IsEnabled(CustomComboPreset.RPRPvP_Burst_PlentifulOpener) &&
@@ -89,8 +88,7 @@ namespace XIVSlothCombo.Combos.PvP
                             return PlentifulHarvest;
 
                         // Harvest Moon Ranged Option
-                        if (IsEnabled(CustomComboPreset.RPRPvP_Burst_RangedHarvest) &&
-                            distance > 5 && soulsow && GCDStopped)
+                        if (IsEnabled(CustomComboPreset.RPRPvP_Burst_RangedHarvest) && HasCharges(HarvestMoon))
                             return HarvestMoon;
 
                         // Enshroud
@@ -108,7 +106,7 @@ namespace XIVSlothCombo.Combos.PvP
                                     return LemuresSlice;
 
                                 // Harvest Moon proc
-                                if (soulsow && distance <= 25)
+                                if (distance <= 25)
                                     return OriginalHook(DeathWarrant);
                             }
 
@@ -147,7 +145,7 @@ namespace XIVSlothCombo.Combos.PvP
                             if (canWeave)
                             {
                                 // Harvest Moon Proc
-                                if (soulsow && distance <= 25)
+                                if (distance <= 25)
                                     return OriginalHook(DeathWarrant);
 
                                 // Grim Swathe Option

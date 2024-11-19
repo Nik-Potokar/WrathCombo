@@ -12,7 +12,7 @@ namespace XIVSlothCombo.Combos.PvP
             GustSlash = 29501,
             AeolianEdge = 29502,
             FumaShuriken = 29505,
-            Mug = 29509,
+            Dokumori = 41451,
             ThreeMudra = 29507,
             Bunshin = 29511,
             Shukuchi = 29513,
@@ -24,7 +24,8 @@ namespace XIVSlothCombo.Combos.PvP
             Meisui = 29508,
             Huton = 29512,
             Doton = 29514,
-            Assassinate = 29503;
+            Assassinate = 29503,
+            ZeshoMeppo = 41452;
 
         internal class Buffs
         {
@@ -32,7 +33,8 @@ namespace XIVSlothCombo.Combos.PvP
                 ThreeMudra = 1317,
                 Hidden = 1316,
                 Bunshin = 2010,
-                ShadeShift = 2011;
+                ShadeShift = 2011,
+                ZeshoMeppoReady = 4305;
         }
 
         internal class Debuffs
@@ -43,14 +45,16 @@ namespace XIVSlothCombo.Combos.PvP
                 SealedHuton = 3196,
                 SealedDoton = 3197,
                 SeakedForkedRaiju = 3195,
-                SealedMeisui = 3198;
+                SealedMeisui = 3198,
+                Dokumori = 4303;
         }
 
         internal class Config
         {
             internal const string
                 NINPvP_Meisui_ST = "NINPvP_Meisui_ST",
-                NINPvP_Meisui_AoE = "NINPvP_Meisui_AoE";
+                NINPvP_Meisui_AoE = "NINPvP_Meisui_AoE",
+                NINPVP_SeitonTenchu = "NINPVP_SeitonTenchu";
         }
 
         internal class NINPvP_ST_BurstMode : CustomCombo
@@ -61,58 +65,74 @@ namespace XIVSlothCombo.Combos.PvP
             {
                 if (actionID is SpinningEdge or GustSlash or AeolianEdge)
                 {
+                    // Cached variables for repeated conditions
                     var threeMudrasCD = GetCooldown(ThreeMudra);
                     var fumaCD = GetCooldown(FumaShuriken);
                     var bunshinStacks = HasEffect(Buffs.Bunshin) ? GetBuffStacks(Buffs.Bunshin) : 0;
-                    bool raijuLocked = HasEffect(Debuffs.SeakedForkedRaiju);
-                    bool meisuiLocked = HasEffect(Debuffs.SealedMeisui);
-                    bool hyoshoLocked = HasEffect(Debuffs.SealedHyoshoRanryu);
-                    bool hutonLocked = HasEffect(Debuffs.SealedHuton);
-                    bool mudraMode = HasEffect(Buffs.ThreeMudra);
                     bool canWeave = CanWeave(SpinningEdge);
+                    bool mudraMode = HasEffect(Buffs.ThreeMudra);
+                    bool inMeleeRange = InMeleeRange();
+                    bool isHidden = HasEffect(Buffs.Hidden);
                     var jobMaxHp = LocalPlayer.MaxHp;
-                    var threshold = GetOptionValue(Config.NINPvP_Meisui_ST);
                     var maxHPThreshold = jobMaxHp - 8000;
-                    var remainingPercentage = (float)LocalPlayer.CurrentHp / (float)maxHPThreshold;
-                    bool inMeisuiRange = threshold >= (remainingPercentage * 100);
+                    float remainingPercentage = (float)LocalPlayer.CurrentHp / maxHPThreshold;
+                    bool inMeisuiRange = GetOptionValue(Config.NINPvP_Meisui_ST) >= (remainingPercentage * 100);
 
-
-                    if (HasEffect(Buffs.Hidden))
+                    // Hidden state actions
+                    if (isHidden)
                         return OriginalHook(Assassinate);
 
-                    if (canWeave)
+                    if (!PvPCommon.IsImmuneToDamage())
                     {
-                        if (InMeleeRange() && !GetCooldown(Mug).IsCooldown)
-                            return OriginalHook(Mug);
 
-                        if (!GetCooldown(Bunshin).IsCooldown)
-                            return OriginalHook(Bunshin);
+                        // Seiton Tenchu priority for targets below 50% HP
+                        if (IsEnabled(CustomComboPreset.NINPvP_ST_SeitonTenchu) && GetTargetHPPercent() < GetOptionValue(Config.NINPVP_SeitonTenchu) && CanUseAction(OriginalHook(SeitonTenchu)))
+                            return OriginalHook(SeitonTenchu);
 
-                        if (threeMudrasCD.RemainingCharges > 0 && !mudraMode)
-                            return OriginalHook(ThreeMudra);
+                        // Zesho Meppo
+                        if (HasEffect(Buffs.ZeshoMeppoReady) && InMeleeRange())
+                            return ZeshoMeppo;
+
+                        if (canWeave)
+                        {
+                            // Melee range actions
+                            if (IsEnabled(CustomComboPreset.NINPvP_ST_Dokumori) && inMeleeRange && !GetCooldown(Dokumori).IsCooldown)
+                                return OriginalHook(Dokumori);
+
+                            // Bunshin
+                            if (IsEnabled(CustomComboPreset.NINPvP_ST_Bunshin) && !GetCooldown(Bunshin).IsCooldown)
+                                return OriginalHook(Bunshin);
+
+                            // Three Mudra
+                            if (IsEnabled(CustomComboPreset.NINPvP_ST_ThreeMudra) && threeMudrasCD.RemainingCharges > 0 && !mudraMode)
+                                return OriginalHook(ThreeMudra);
+                        }
+
+                        // Mudra mode actions
+                        if (mudraMode)
+                        {
+                            if (IsEnabled(CustomComboPreset.NINPvP_ST_Meisui) && inMeisuiRange && !HasEffect(Debuffs.SealedMeisui))
+                                return OriginalHook(Meisui);
+
+                            if (!HasEffect(Debuffs.SealedHyoshoRanryu))
+                                return OriginalHook(HyoshoRanryu);
+
+                            if (!HasEffect(Debuffs.SeakedForkedRaiju) && bunshinStacks > 0)
+                                return OriginalHook(ForkedRaiju);
+
+                            if (!HasEffect(Debuffs.SealedHuton))
+                                return OriginalHook(Huton);
+                        }
+
+                        // Fuma Shuriken
+                        if (IsEnabled(CustomComboPreset.NINPvP_ST_FumaShuriken) &&  fumaCD.RemainingCharges > 0)
+                            return OriginalHook(FumaShuriken);
                     }
-
-                    if (mudraMode)
-                    {
-                        if (IsEnabled(CustomComboPreset.NINPvP_ST_Meisui) && inMeisuiRange && !meisuiLocked)
-                            return OriginalHook(Meisui);
-
-                        if (!hyoshoLocked)
-                            return OriginalHook(HyoshoRanryu);
-
-                        if (!raijuLocked && bunshinStacks > 0)
-                            return OriginalHook(ForkedRaiju);
-
-                        if (!hutonLocked)
-                            return OriginalHook(Huton);
-                    }
-
-                    if (fumaCD.RemainingCharges > 0)
-                        return OriginalHook(FumaShuriken);
 
                 }
 
                 return actionID;
+
             }
         }
 
@@ -140,42 +160,45 @@ namespace XIVSlothCombo.Combos.PvP
                     if (HasEffect(Buffs.Hidden))
                         return OriginalHook(Assassinate);
 
-                    if (canWeave)
+                    if(!PvPCommon.IsImmuneToDamage())
                     {
-                        if (InMeleeRange() && !GetCooldown(Mug).IsCooldown)
-                            return OriginalHook(Mug);
+                        if (canWeave)
+                        {
+                            if (IsEnabled(CustomComboPreset.NINPvP_AoE_Dokumori) && InMeleeRange() && !GetCooldown(Dokumori).IsCooldown)
+                                return OriginalHook(Dokumori);
 
-                        if (!GetCooldown(Bunshin).IsCooldown)
-                            return OriginalHook(Bunshin);
+                            if (IsEnabled(CustomComboPreset.NINPvP_AoE_Bunshin) && !GetCooldown(Bunshin).IsCooldown)
+                                return OriginalHook(Bunshin);
 
-                        if (threeMudrasCD.RemainingCharges > 0 && !mudraMode)
-                            return OriginalHook(ThreeMudra);
-                    }
+                            if (IsEnabled(CustomComboPreset.NINPvP_AoE_ThreeMudra) && threeMudrasCD.RemainingCharges > 0 && !mudraMode)
+                                return OriginalHook(ThreeMudra);
+                        }
 
-                    if (mudraMode)
-                    {
-                        if (IsEnabled(CustomComboPreset.NINPvP_AoE_Meisui) && inMeisuiRange && !meisuiLocked)
-                            return OriginalHook(Meisui);
+                        if (mudraMode)
+                        {
+                            if (IsEnabled(CustomComboPreset.NINPvP_AoE_Meisui) && inMeisuiRange && !meisuiLocked)
+                                return OriginalHook(Meisui);
 
-                        if (!dotonLocked)
-                            return OriginalHook(Doton);
+                            if (!dotonLocked)
+                                return OriginalHook(Doton);
 
-                        if (!gokaLocked)
-                            return OriginalHook(GokaMekkyaku);
-                    }
+                            if (!gokaLocked)
+                                return OriginalHook(GokaMekkyaku);
+                        }
 
-                    if (fumaCD.RemainingCharges > 0)
-                        return OriginalHook(FumaShuriken);
+                        if (InMeleeRange())
+                        {
+                            if (lastComboActionID == GustSlash)
+                                return OriginalHook(AeolianEdge);
 
-                    if (InMeleeRange())
-                    {
-                        if (lastComboActionID == GustSlash)
-                            return OriginalHook(AeolianEdge);
+                            if (lastComboActionID == SpinningEdge)
+                                return OriginalHook(GustSlash);
 
-                        if (lastComboActionID == SpinningEdge)
-                            return OriginalHook(GustSlash);
+                            return OriginalHook(SpinningEdge);
+                        }
 
-                        return OriginalHook(SpinningEdge);
+                        if (IsEnabled(CustomComboPreset.NINPvP_AoE_FumaShuriken) && fumaCD.RemainingCharges > 0)
+                            return OriginalHook(FumaShuriken);
                     }
                 }
 

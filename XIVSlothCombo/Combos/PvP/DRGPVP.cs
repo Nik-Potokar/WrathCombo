@@ -50,9 +50,8 @@ namespace XIVSlothCombo.Combos.PvP
             {
                 if (actionID is RaidenThrust or FangAndClaw or WheelingThrust)
                 {
-                    bool enemyGuarded = TargetHasEffectAny(PvPCommon.Buffs.Guard);
 
-                    if (!enemyGuarded)
+                    if (!PvPCommon.IsImmuneToDamage())
                     {
                         if (CanWeave(actionID))
                         {

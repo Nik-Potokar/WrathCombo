@@ -49,7 +49,6 @@ namespace XIVSlothCombo.Combos.PvP
                 bool isMoving = IsMoving;
                 bool hasTarget = HasTarget();
                 bool hasStarPrism = HasEffect(Buffs.Starstruck);
-                bool targetHasGuard = TargetHasEffectAny(PvPCommon.Buffs.Guard);
                 bool hasSubtractivePalette = HasEffect(Buffs.SubtractivePalette);
                 bool hasPortrait = HasEffect(Buffs.MooglePortrait) || HasEffect(Buffs.MadeenPortrait);
                 bool isStarPrismExpiring = HasEffect(Buffs.Starstruck) && GetBuffRemainingTime(Buffs.Starstruck) <= 3;
@@ -61,37 +60,46 @@ namespace XIVSlothCombo.Combos.PvP
                 if (actionID is FireInRed or AeroInGreen or WaterInBlue)
                 {
                     // Tempera Coat / Tempera Grassa
-                    if (IsEnabled(CustomComboPreset.PCTPvP_TemperaCoat) && ((IsOffCooldown(TemperaCoat) &&
-                        InCombat() && PlayerHealthPercentageHp() < Config.PCTPvP_TemperaHP) || isTemperaCoatExpiring))
+                    if(IsEnabled(CustomComboPreset.PCTPvP_TemperaCoat))
+                    {
+                        if ((IsOffCooldown(TemperaCoat) &&
+                        InCombat() && PlayerHealthPercentageHp() < Config.PCTPvP_TemperaHP) || isTemperaCoatExpiring)
                         return OriginalHook(TemperaCoat);
+                    }
 
-                    if (hasTarget && !targetHasGuard)
+                    if (hasTarget && !PvPCommon.IsImmuneToDamage())
                     {
                         // Star Prism
-                        if (hasStarPrism && (isBurstControlled || isStarPrismExpiring))
-                            return StarPrism;
+                        if(IsEnabled(CustomComboPreset.PCTPvP_StarPrism))
+                        {
+                            if (hasStarPrism && (isBurstControlled || isStarPrismExpiring))
+                                return StarPrism;
+                        }
 
                         // Moogle / Madeen Portrait
-                        if (hasPortrait && isBurstControlled)
+                        if (IsEnabled(CustomComboPreset.PCTPvP_MogOfTheAges) && hasPortrait && isBurstControlled)
                             return OriginalHook(MogOfTheAges);
 
                         // Living Muse
-                        if (hasMotifDrawn && HasCharges(OriginalHook(LivingMuse)) && isBurstControlled)
+                        if (IsEnabled(CustomComboPreset.PCTPvP_LivingMuse) && hasMotifDrawn && HasCharges(OriginalHook(LivingMuse)) && isBurstControlled)
                             return OriginalHook(LivingMuse);
 
                         // Holy in White / Comet in Black
-                        if (HasCharges(OriginalHook(HolyInWhite)) && isBurstControlled)
+                        if (IsEnabled(CustomComboPreset.PCTPvP_HolyInWhite) && HasCharges(OriginalHook(HolyInWhite)) && isBurstControlled)
                             return OriginalHook(HolyInWhite);
                     }
 
                     // Creature Motif
-                    if (!hasMotifDrawn && !isMoving)
+                    if (IsEnabled(CustomComboPreset.PCTPvP_CreatureMotif) && !hasMotifDrawn && !isMoving)
                         return OriginalHook(CreatureMotif);
 
                     // Subtractive Palette
-                    if (IsEnabled(CustomComboPreset.PCTPvP_SubtractivePalette) && IsOffCooldown(OriginalHook(SubtractivePalette)) &&
-                        hasTarget && ((isMoving && hasSubtractivePalette) || (!isMoving && !hasSubtractivePalette)))
-                        return OriginalHook(SubtractivePalette);
+                    if(IsEnabled(CustomComboPreset.PCTPvP_SubtractivePalette))
+                    {
+                        if (IsOffCooldown(OriginalHook(SubtractivePalette)) &&
+                            hasTarget && ((isMoving && hasSubtractivePalette) || (!isMoving && !hasSubtractivePalette)))
+                            return OriginalHook(SubtractivePalette);
+                    }
                 }
 
                 return actionID;

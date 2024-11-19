@@ -13,7 +13,8 @@ namespace XIVSlothCombo.Combos.PvP
             Toxikon = 29262,
             Kardia = 29264,
             EukrasianDosis = 29257,
-            Toxicon2 = 29263;
+            Toxicon2 = 29263,
+            Psyche = 41658;
 
         internal class Debuffs
         {
@@ -41,27 +42,33 @@ namespace XIVSlothCombo.Combos.PvP
             {
                 if (actionID == Dosis)
                 {
-
-                    if (!HasEffectAny(Buffs.Kardia))
+                    if (IsEnabled(CustomComboPreset.SGEPvP_BurstMode_KardiaReminder) && !HasEffectAny(Buffs.Kardia))
                         return Kardia;
 
-                    if (IsEnabled(CustomComboPreset.SGEPvP_BurstMode_Pneuma) && !GetCooldown(Pneuma).IsCooldown)
-                        return Pneuma;
+                    if (!PvPCommon.IsImmuneToDamage())
+                    {
+                        // Psyche after Phlegma
+                        if (IsEnabled(CustomComboPreset.SGEPvP_BurstMode_Psyche) && WasLastSpell(Phlegma))
+                            return Psyche;
 
-                    if (InMeleeRange() && !HasEffect(Buffs.Eukrasia) && GetCooldown(Phlegma).RemainingCharges > 0)
-                        return Phlegma;
+                        if (IsEnabled(CustomComboPreset.SGEPvP_BurstMode_Pneuma) && !GetCooldown(Pneuma).IsCooldown)
+                            return Pneuma;
 
-                    if (HasEffect(Buffs.Addersting) && !HasEffect(Buffs.Eukrasia))
-                        return Toxicon2;
+                        if (IsEnabled(CustomComboPreset.SGEPvP_BurstMode_Phlegma) && InMeleeRange() && !HasEffect(Buffs.Eukrasia) && GetCooldown(Phlegma).RemainingCharges > 0)
+                            return Phlegma;
 
-                    if (!TargetHasEffectAny(Debuffs.EukrasianDosis) && GetCooldown(Eukrasia).RemainingCharges > 0 && !HasEffect(Buffs.Eukrasia))
-                        return Eukrasia;
+                        if (IsEnabled(CustomComboPreset.SGEPvP_BurstMode_Toxikon2) && HasEffect(Buffs.Addersting) && !HasEffect(Buffs.Eukrasia))
+                            return Toxicon2;
 
-                    if (HasEffect(Buffs.Eukrasia))
-                        return OriginalHook(Dosis);
+                        if (IsEnabled(CustomComboPreset.SGEPvP_BurstMode_Eukrasia) && !TargetHasEffectAny(Debuffs.EukrasianDosis) && GetCooldown(Eukrasia).RemainingCharges > 0 && !HasEffect(Buffs.Eukrasia))
+                            return Eukrasia;
 
-                    if (!TargetHasEffect(Debuffs.Toxicon) && GetCooldown(Toxikon).RemainingCharges > 0)
-                        return OriginalHook(Toxikon);
+                        if (HasEffect(Buffs.Eukrasia))
+                            return OriginalHook(Dosis);
+
+                        if (IsEnabled(CustomComboPreset.SGEPvP_BurstMode_Toxikon) && !TargetHasEffect(Debuffs.Toxicon) && GetCooldown(Toxikon).RemainingCharges > 0)
+                            return OriginalHook(Toxikon);
+                    }
 
                 }
                 return actionID;

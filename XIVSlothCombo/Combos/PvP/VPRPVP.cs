@@ -23,6 +23,12 @@ namespace XIVSlothCombo.Combos.PvP
             FourthGeneration = 39172,
             Ouroboros = 39173;
 
+        internal class Buffs
+        {
+            internal const ushort
+                HardenedScales = 4096;
+        }
+
         internal class VPRPvP_Burst : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPRPvP_Burst;
@@ -37,7 +43,7 @@ namespace XIVSlothCombo.Combos.PvP
 
                 if (actionID is SteelFangs or HuntersSting or BarbarousSlice or PiercingFangs or SwiftskinsSting or RavenousBite)
                 {
-                    if (HasTarget())
+                    if (!PvPCommon.IsImmuneToDamage() && HasTarget())
                     {
                         // Serpent's Tail
                         if (isSerpentsTailPrimed && canWeave)
