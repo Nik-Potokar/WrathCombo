@@ -1,36 +1,94 @@
-﻿using Dalamud.Game.ClientState.JobGauge.Types;
+﻿using System.Linq;
+using Dalamud.Game.ClientState.JobGauge.Types;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using XIVSlothCombo.Combos.JobHelpers.Enums;
-using XIVSlothCombo.CustomComboNS.Functions;
 using XIVSlothCombo.Data;
+using static XIVSlothCombo.CustomComboNS.Functions.CustomComboFunctions;
 
 namespace XIVSlothCombo.Combos.PvE;
 
 internal partial class SAM
 {
-    internal static int SenCount => GetSenCount();
+    public static SAMGauge gauge = GetJobGauge<SAMGauge>();
+    public static SAMOpenerLogic SAMOpener = new();
 
-    internal static bool ComboStarted => GetComboStarted();
+    public static int MeikyoUsed => ActionWatching.CombatActions.Count(x => x == MeikyoShisui);
 
-    private static int GetSenCount()
+    public static bool oneSen => OriginalHook(Iaijutsu) is Higanbana;
+
+    public static bool twoSen => OriginalHook(Iaijutsu) is TenkaGoken or TendoGoken;
+
+    public static bool threeSen => OriginalHook(Iaijutsu) is MidareSetsugekka or TendoSetsugekka;
+
+    public static bool trueNorthReady => TargetNeedsPositionals() && ActionReady(All.TrueNorth) &&
+                                        !HasEffect(All.Buffs.TrueNorth);
+
+    public static float GCD => GetCooldown(Hakaze).CooldownTotal;
+
+    internal class SAMHelper
     {
-        SAMGauge gauge = CustomComboFunctions.GetJobGauge<SAMGauge>();
-        int senCount = 0;
-        if (gauge.HasGetsu) senCount++;
-        if (gauge.HasSetsu) senCount++;
-        if (gauge.HasKa) senCount++;
+        internal static int SenCount => GetSenCount();
 
-        return senCount;
-    }
+        internal static bool ComboStarted => GetComboStarted();
 
-    private static unsafe bool GetComboStarted()
-    {
-        uint comboAction = ActionManager.Instance()->Combo.Action;
+        private static int GetSenCount()
+        {
+            int senCount = 0;
+            if (gauge.HasGetsu) senCount++;
+            if (gauge.HasSetsu) senCount++;
+            if (gauge.HasKa) senCount++;
 
-        return comboAction == CustomComboFunctions.OriginalHook(Hakaze) ||
-               comboAction == CustomComboFunctions.OriginalHook(Jinpu) ||
-               comboAction == CustomComboFunctions.OriginalHook(Shifu);
+            return senCount;
+        }
+
+        private static unsafe bool GetComboStarted()
+        {
+            uint comboAction = ActionManager.Instance()->Combo.Action;
+
+            return comboAction == OriginalHook(Hakaze) ||
+                   comboAction == OriginalHook(Jinpu) ||
+                   comboAction == OriginalHook(Shifu);
+        }
+
+        public static bool OptimalMeikyo()
+        {
+            if (ActionReady(MeikyoShisui))
+            {
+                int usedMeikyo = MeikyoUsed % 15;
+
+                //NOTE: Opener Meikyos don't count here for some reason per testing. On 6min, Meikyos 6 & 7 are used, so loop resets at 8.
+
+                if (GetCooldownRemainingTime(Ikishoten) is > 49 and < 71) //1min windows
+                    switch (usedMeikyo)
+                    {
+                        case 1 or 8 when
+                            threeSen:
+                        case 3 or 10 when
+                            twoSen:
+                        case 5 or 12 when
+                            oneSen:
+                            return true;
+                    }
+
+                if (GetCooldownRemainingTime(Ikishoten) > 80) //2min windows
+                    switch (usedMeikyo)
+                    {
+                        case 2 or 9 when
+                            threeSen:
+                        case 4 or 11 when
+                            twoSen:
+                        case 6 or 13 when
+                            oneSen:
+                            return true;
+                    }
+
+                if (usedMeikyo is 7 or 14 && !HasEffect(Buffs.MeikyoShisui))
+                    return true;
+            }
+
+            return false;
+        }
     }
 
     internal class SAMOpenerLogic
@@ -43,7 +101,7 @@ internal partial class SAM
 
         private static uint OpenerLevel => 100;
 
-        public static bool LevelChecked => CustomComboFunctions.LocalPlayer.Level >= OpenerLevel;
+        public static bool LevelChecked => LocalPlayer.Level >= OpenerLevel;
 
         private static bool CanOpener => HasCooldowns() && HasPrePullCooldowns() && LevelChecked;
 
@@ -73,10 +131,10 @@ internal partial class SAM
 
         private static bool HasCooldowns()
         {
-            if (!CustomComboFunctions.ActionReady(Senei))
+            if (!ActionReady(Senei))
                 return false;
 
-            if (!CustomComboFunctions.ActionReady(Ikishoten))
+            if (!ActionReady(Ikishoten))
                 return false;
 
             return true;
@@ -84,10 +142,10 @@ internal partial class SAM
 
         public static bool HasPrePullCooldowns()
         {
-            if (CustomComboFunctions.GetRemainingCharges(MeikyoShisui) < 2)
+            if (GetRemainingCharges(MeikyoShisui) < 2)
                 return false;
 
-            if (CustomComboFunctions.GetRemainingCharges(All.TrueNorth) < 2)
+            if (GetRemainingCharges(All.TrueNorth) < 2)
                 return false;
 
             return true;
@@ -104,14 +162,14 @@ internal partial class SAM
 
             if (CurrentState == OpenerState.PrePull && PrePullStep > 0)
             {
-                if (CustomComboFunctions.HasEffect(Buffs.MeikyoShisui) && PrePullStep == 1) PrePullStep++;
+                if (HasEffect(Buffs.MeikyoShisui) && PrePullStep == 1) PrePullStep++;
                 else if (PrePullStep == 1) actionID = MeikyoShisui;
 
-                if (CustomComboFunctions.HasEffect(All.Buffs.TrueNorth) && PrePullStep == 2)
+                if (HasEffect(All.Buffs.TrueNorth) && PrePullStep == 2)
                     currentState = OpenerState.InOpener;
                 else if (PrePullStep == 2) actionID = All.TrueNorth;
 
-                if (ActionWatching.CombatActions.Count > 2 && CustomComboFunctions.InCombat())
+                if (ActionWatching.CombatActions.Count > 2 && InCombat())
                     CurrentState = OpenerState.FailedOpener;
 
                 return true;
@@ -128,82 +186,82 @@ internal partial class SAM
 
             if (currentState == OpenerState.InOpener)
             {
-                if (CustomComboFunctions.WasLastAction(Gekko) && OpenerStep == 1) OpenerStep++;
+                if (WasLastAction(Gekko) && OpenerStep == 1) OpenerStep++;
                 else if (OpenerStep == 1) actionID = Gekko;
 
-                if (CustomComboFunctions.WasLastAction(Kasha) && OpenerStep == 2) OpenerStep++;
+                if (WasLastAction(Kasha) && OpenerStep == 2) OpenerStep++;
                 else if (OpenerStep == 2) actionID = Kasha;
 
-                if (CustomComboFunctions.WasLastAction(Ikishoten) && OpenerStep == 3) OpenerStep++;
+                if (WasLastAction(Ikishoten) && OpenerStep == 3) OpenerStep++;
                 else if (OpenerStep == 3) actionID = Ikishoten;
 
-                if (CustomComboFunctions.WasLastAction(Yukikaze) && OpenerStep == 4) OpenerStep++;
+                if (WasLastAction(Yukikaze) && OpenerStep == 4) OpenerStep++;
                 else if (OpenerStep == 4) actionID = Yukikaze;
 
-                if (CustomComboFunctions.WasLastAction(TendoSetsugekka) && OpenerStep == 5) OpenerStep++;
+                if (WasLastAction(TendoSetsugekka) && OpenerStep == 5) OpenerStep++;
                 else if (OpenerStep == 5) actionID = TendoSetsugekka;
 
-                if (CustomComboFunctions.WasLastAction(Senei) && OpenerStep == 6) OpenerStep++;
+                if (WasLastAction(Senei) && OpenerStep == 6) OpenerStep++;
                 else if (OpenerStep == 6) actionID = Senei;
 
-                if (CustomComboFunctions.WasLastAction(TendoKaeshiSetsugekka) && OpenerStep == 7) OpenerStep++;
+                if (WasLastAction(TendoKaeshiSetsugekka) && OpenerStep == 7) OpenerStep++;
                 else if (OpenerStep == 7) actionID = TendoKaeshiSetsugekka;
 
-                if (CustomComboFunctions.WasLastAction(MeikyoShisui) && OpenerStep == 8) OpenerStep++;
+                if (WasLastAction(MeikyoShisui) && OpenerStep == 8) OpenerStep++;
                 else if (OpenerStep == 8) actionID = MeikyoShisui;
 
-                if (CustomComboFunctions.WasLastAction(Gekko) && OpenerStep == 9) OpenerStep++;
+                if (WasLastAction(Gekko) && OpenerStep == 9) OpenerStep++;
                 else if (OpenerStep == 9) actionID = Gekko;
 
-                if (CustomComboFunctions.WasLastAction(Zanshin) && OpenerStep == 10) OpenerStep++;
+                if (WasLastAction(Zanshin) && OpenerStep == 10) OpenerStep++;
                 else if (OpenerStep == 10) actionID = Zanshin;
 
-                if (CustomComboFunctions.WasLastAction(Higanbana) && OpenerStep == 11) OpenerStep++;
+                if (WasLastAction(Higanbana) && OpenerStep == 11) OpenerStep++;
                 else if (OpenerStep == 11) actionID = Higanbana;
 
-                if (CustomComboFunctions.WasLastAction(OgiNamikiri) && OpenerStep == 12) OpenerStep++;
+                if (WasLastAction(OgiNamikiri) && OpenerStep == 12) OpenerStep++;
                 else if (OpenerStep == 12) actionID = OgiNamikiri;
 
-                if (CustomComboFunctions.WasLastAction(Shoha) && OpenerStep == 13) OpenerStep++;
+                if (WasLastAction(Shoha) && OpenerStep == 13) OpenerStep++;
                 else if (OpenerStep == 13) actionID = Shoha;
 
-                if (CustomComboFunctions.WasLastAction(KaeshiNamikiri) && OpenerStep == 14) OpenerStep++;
+                if (WasLastAction(KaeshiNamikiri) && OpenerStep == 14) OpenerStep++;
                 else if (OpenerStep == 14) actionID = KaeshiNamikiri;
 
-                if (CustomComboFunctions.WasLastAction(Kasha) && OpenerStep == 15) OpenerStep++;
+                if (WasLastAction(Kasha) && OpenerStep == 15) OpenerStep++;
                 else if (OpenerStep == 15) actionID = Kasha;
 
-                if (CustomComboFunctions.WasLastAction(Shinten) && OpenerStep == 16) OpenerStep++;
+                if (WasLastAction(Shinten) && OpenerStep == 16) OpenerStep++;
                 else if (OpenerStep == 16) actionID = Shinten;
 
-                if (CustomComboFunctions.WasLastAction(Gekko) && OpenerStep == 17) OpenerStep++;
+                if (WasLastAction(Gekko) && OpenerStep == 17) OpenerStep++;
                 else if (OpenerStep == 17) actionID = Gekko;
 
-                if (CustomComboFunctions.WasLastAction(Gyoten) && OpenerStep == 18) OpenerStep++;
+                if (WasLastAction(Gyoten) && OpenerStep == 18) OpenerStep++;
                 else if (OpenerStep == 18) actionID = Gyoten;
 
-                if (CustomComboFunctions.WasLastAction(Gyofu) && OpenerStep == 19) OpenerStep++;
+                if (WasLastAction(Gyofu) && OpenerStep == 19) OpenerStep++;
                 else if (OpenerStep == 19) actionID = Gyofu;
 
-                if (CustomComboFunctions.WasLastAction(Yukikaze) && OpenerStep == 20) OpenerStep++;
+                if (WasLastAction(Yukikaze) && OpenerStep == 20) OpenerStep++;
                 else if (OpenerStep == 20) actionID = Yukikaze;
 
-                if (CustomComboFunctions.WasLastAction(Shinten) && OpenerStep == 21) OpenerStep++;
+                if (WasLastAction(Shinten) && OpenerStep == 21) OpenerStep++;
                 else if (OpenerStep == 21) actionID = Shinten;
 
-                if (CustomComboFunctions.WasLastAction(TendoSetsugekka) && OpenerStep == 22) OpenerStep++;
+                if (WasLastAction(TendoSetsugekka) && OpenerStep == 22) OpenerStep++;
                 else if (OpenerStep == 22) actionID = TendoSetsugekka;
 
-                if (CustomComboFunctions.WasLastAction(TendoKaeshiSetsugekka) && OpenerStep == 23)
+                if (WasLastAction(TendoKaeshiSetsugekka) && OpenerStep == 23)
                     CurrentState = OpenerState.OpenerFinished;
                 else if (OpenerStep == 23) actionID = TendoKaeshiSetsugekka;
 
                 if (ActionWatching.TimeSinceLastAction.TotalSeconds >= 5)
                     CurrentState = OpenerState.FailedOpener;
 
-                if (((actionID == Senei && CustomComboFunctions.IsOnCooldown(Senei)) ||
-                     (actionID == Ikishoten && CustomComboFunctions.IsOnCooldown(Ikishoten)) ||
-                     (actionID == MeikyoShisui && CustomComboFunctions.GetRemainingCharges(MeikyoShisui) < 1)) &&
+                if (((actionID == Senei && IsOnCooldown(Senei)) ||
+                     (actionID == Ikishoten && IsOnCooldown(Ikishoten)) ||
+                     (actionID == MeikyoShisui && GetRemainingCharges(MeikyoShisui) < 1)) &&
                     ActionWatching.TimeSinceLastAction.TotalSeconds >= 3)
                 {
                     CurrentState = OpenerState.FailedOpener;
@@ -236,7 +294,7 @@ internal partial class SAM
                 if (DoOpener(ref actionID))
                     return true;
 
-            if (!CustomComboFunctions.InCombat())
+            if (!InCombat())
             {
                 ResetOpener();
                 CurrentState = OpenerState.PrePull;

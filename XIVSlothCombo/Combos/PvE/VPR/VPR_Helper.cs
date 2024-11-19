@@ -3,22 +3,22 @@ using Dalamud.Game.ClientState.JobGauge.Types;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using XIVSlothCombo.Combos.JobHelpers.Enums;
-using XIVSlothCombo.Combos.PvE;
 using XIVSlothCombo.Data;
-using static XIVSlothCombo.Combos.PvE.VPR;
 using static XIVSlothCombo.CustomComboNS.Functions.CustomComboFunctions;
 
-namespace XIVSlothCombo.Combos.JobHelpers;
+namespace XIVSlothCombo.Combos.PvE;
 
-internal class VPR
+internal partial class VPR
 {
+    public static VPROpenerLogic VPROpener = new();
+
+    public static VPRGauge gauge = GetJobGauge<VPRGauge>();
+
     // VPR Gauge & Extensions
 
-    public static float GCD = GetCooldown(OriginalHook(ReavingFangs)).CooldownTotal;
-    public static float ireCD = GetCooldownRemainingTime(SerpentsIre);
+    public static float GCD => GetCooldown(OriginalHook(ReavingFangs)).CooldownTotal;
 
-    public static VPROpenerLogic VPROpener = new();
-    public static VPRGauge gauge = GetJobGauge<VPRGauge>();
+    public static float ireCD => GetCooldownRemainingTime(SerpentsIre);
 
     public static bool trueNorthReady => TargetNeedsPositionals() && ActionReady(All.TrueNorth) &&
                                          !HasEffect(All.Buffs.TrueNorth);
