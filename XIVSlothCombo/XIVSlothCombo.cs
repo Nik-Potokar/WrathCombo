@@ -1,5 +1,4 @@
-using Dalamud.Game.Command;
-using Dalamud.Game.Gui.Dtr;
+﻿using Dalamud.Game.Gui.Dtr;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
@@ -37,7 +36,7 @@ namespace XIVSlothCombo
     /// <summary> Main plugin implementation. </summary>
     public sealed partial class XIVSlothCombo : IDalamudPlugin
     {
-        private const string Command = "/scombo";
+        private const string Command = "/wrath";
 
         private readonly ConfigWindow ConfigWindow;
         private readonly TargetHelper TargetHelper;
@@ -123,11 +122,11 @@ namespace XIVSlothCombo
             Svc.PluginInterface.UiBuilder.Draw += ws.Draw;
             Svc.PluginInterface.UiBuilder.OpenConfigUi += OnOpenConfigUi;
 
-            Svc.Commands.AddHandler(Command, new CommandInfo(OnCommand)
-            {
-                HelpMessage = "Open a window to edit custom combo settings.",
-                ShowInHelp = true,
-            });
+            EzCmd.Add(Command, OnCommand, "Open a window to edit custom combo settings.\n" +
+                "/wrath auto → Toggle Auto-rotation on/off.\n" +
+                "/wrath debug → Dumps a debug log onto your desktop for developers.\n" +
+                "/scombo - Old alias from XIVSlothCombo, still works!");
+            EzCmd.Add("/scombo", OnCommand);
 
             DtrBarEntry ??= Svc.DtrBar.Get("Wrath Combo");
             DtrBarEntry.OnClick = () =>
@@ -273,7 +272,6 @@ namespace XIVSlothCombo
 
             ws.RemoveAllWindows();
             Svc.DtrBar.Remove("Wrath Combo");
-            Svc.Commands.RemoveHandler(Command);
             Svc.Framework.Update -= OnFrameworkUpdate;
             Svc.PluginInterface.UiBuilder.OpenConfigUi -= OnOpenConfigUi;
             Svc.PluginInterface.UiBuilder.Draw -= DrawUI;
@@ -429,7 +427,7 @@ namespace XIVSlothCombo
 
                             string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-                            using StreamWriter file = new($"{desktopPath}/SlothDebug.txt", append: false);  // Output path
+                            using StreamWriter file = new($"{desktopPath}/WrathDebug.txt", append: false);  // Output path
 
                             file.WriteLine("START DEBUG LOG");
                             file.WriteLine("");

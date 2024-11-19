@@ -5,22 +5,20 @@ using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Statuses;
 using ECommons.DalamudServices;
 using XIVSlothCombo.Combos.JobHelpers.Enums;
-using XIVSlothCombo.Combos.PvE;
 using XIVSlothCombo.Data;
-using static XIVSlothCombo.Combos.PvE.BLM;
 using static XIVSlothCombo.CustomComboNS.Functions.CustomComboFunctions;
 
-namespace XIVSlothCombo.Combos.JobHelpers;
+namespace XIVSlothCombo.Combos.PvE;
 
-internal class BLM
+internal partial class BLM
 {
     // BLM Gauge & Extensions
     public static BLMGauge Gauge = GetJobGauge<BLMGauge>();
 
     public static bool canWeave = CanSpellWeave(ActionWatching.LastSpell);
-
-    public static uint curMp = LocalPlayer.CurrentMp;
     public static BLMOpenerLogic BLMOpener = new();
+
+    public static uint curMp => LocalPlayer.CurrentMp;
 
     public static int maxPolyglot => TraitLevelChecked(Traits.EnhancedPolyglotII) ? 3 :
         TraitLevelChecked(Traits.EnhancedPolyglot) ? 2 : 1;
@@ -43,7 +41,10 @@ internal class BLM
     public static bool canSwiftF => TraitLevelChecked(Traits.AspectMasteryIII) &&
                                     IsOffCooldown(All.Swiftcast);
 
-    public static bool HasPolyglotStacks(BLMGauge gauge) => gauge.PolyglotStacks > 0;
+    public static bool HasPolyglotStacks(BLMGauge gauge)
+    {
+        return gauge.PolyglotStacks > 0;
+    }
 
     internal class BLMOpenerLogic
     {
@@ -283,25 +284,25 @@ internal class BLM
             switch (firstSpell)
             {
                 case Blizzard or Blizzard2 or Blizzard3 or Blizzard4 or Freeze or HighBlizzard2:
+                {
+                    uint castedSpell = LocalPlayer.CastActionId;
+
+                    if (castedSpell is Blizzard or Blizzard2 or Blizzard3 or Blizzard4 or Freeze or HighBlizzard2)
+                        return true;
+
+                    if (spells.Count >= 2)
                     {
-                        uint castedSpell = LocalPlayer.CastActionId;
+                        uint secondSpell = spells[^2];
 
-                        if (castedSpell is Blizzard or Blizzard2 or Blizzard3 or Blizzard4 or Freeze or HighBlizzard2)
-                            return true;
-
-                        if (spells.Count >= 2)
+                        switch (secondSpell)
                         {
-                            uint secondSpell = spells[^2];
-
-                            switch (secondSpell)
-                            {
-                                case Blizzard or Blizzard2 or Blizzard3 or Blizzard4 or Freeze or HighBlizzard2:
-                                    return true;
-                            }
+                            case Blizzard or Blizzard2 or Blizzard3 or Blizzard4 or Freeze or HighBlizzard2:
+                                return true;
                         }
-
-                        break;
                     }
+
+                    break;
+                }
             }
 
             return false;

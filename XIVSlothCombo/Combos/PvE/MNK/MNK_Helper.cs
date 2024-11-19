@@ -4,17 +4,18 @@ using Dalamud.Game.ClientState.JobGauge.Types;
 using ECommons.DalamudServices;
 using XIVSlothCombo.Combos.JobHelpers.Enums;
 using XIVSlothCombo.Data;
-using static XIVSlothCombo.Combos.PvE.MNK;
 using static XIVSlothCombo.CustomComboNS.Functions.CustomComboFunctions;
 
-namespace XIVSlothCombo.Combos.JobHelpers;
+namespace XIVSlothCombo.Combos.PvE;
 
-internal class MNK
+internal partial class MNK
 {
-    // MNK Gauge & Extensions
-    public static float GCD = GetCooldown(OriginalHook(Bootshine)).CooldownTotal;
     public static MNKOpenerLogic MNKOpener = new();
+
     public static MNKGauge Gauge = GetJobGauge<MNKGauge>();
+
+    // MNK Gauge & Extensions
+    public static float GCD => GetCooldown(OriginalHook(Bootshine)).CooldownTotal;
 
     public static bool bothNadisOpen => Gauge.Nadi.ToString() == "LUNAR, SOLAR";
 

@@ -280,7 +280,7 @@ namespace XIVSlothCombo.Window.Functions
                     case DRK.JobID: DRK.Config.Draw(preset); break;
                     case GNB.JobID: GNB.Config.Draw(preset); break;
                     case MCH.JobID: MCH.Config.Draw(preset); break;
-                   // case MNK.JobID: MNK.Config.Draw(preset); break;
+                    case MNK.JobID: MNK.Config.Draw(preset); break;
                     case NIN.JobID: NIN.Config.Draw(preset); break;
                     case PCT.JobID: PCT.Config.Draw(preset); break;
                     case PLD.JobID: PLD.Config.Draw(preset); break;

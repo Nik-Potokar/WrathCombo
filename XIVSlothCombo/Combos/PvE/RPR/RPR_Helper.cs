@@ -2,20 +2,19 @@
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using XIVSlothCombo.Combos.JobHelpers.Enums;
-using XIVSlothCombo.Combos.PvE;
 using XIVSlothCombo.Data;
-using static XIVSlothCombo.Combos.PvE.RPR;
 using static XIVSlothCombo.CustomComboNS.Functions.CustomComboFunctions;
 
-namespace XIVSlothCombo.Combos.JobHelpers;
+namespace XIVSlothCombo.Combos.PvE;
 
-internal class RPR
+internal partial class RPR
 {
-    // RPR Gauge & Extensions
-    public static float GCD = GetCooldown(Slice).CooldownTotal;
-
     public static RPROpenerLogic RPROpener = new();
+
     public static RPRGauge Gauge = GetJobGauge<RPRGauge>();
+
+    // RPR Gauge & Extensions
+    public static float GCD => GetCooldown(Slice).CooldownTotal;
 
     public static bool trueNorthReady => TargetNeedsPositionals() && ActionReady(All.TrueNorth) &&
                                          !HasEffect(All.Buffs.TrueNorth);
@@ -221,15 +220,7 @@ internal class RPR
 
             return ActionManager.Instance()->Combo.Timer != 0 && ActionManager.Instance()->Combo.Timer < GCD;
         }
-
-        public static bool IsBuffExpiring(float Times)
-        {
-            float GCD = GetCooldown(Slice).CooldownTotal * Times;
-
-            return (HasEffect(Buffs.EnhancedGallows) && GetBuffRemainingTime(Buffs.EnhancedGallows) < GCD) ||
-                   (HasEffect(Buffs.EnhancedGibbet) && GetBuffRemainingTime(Buffs.EnhancedGibbet) < GCD);
-        }
-
+        
         public static bool IsDebuffExpiring(float Times)
         {
             float GCD = GetCooldown(Slice).CooldownTotal * Times;
