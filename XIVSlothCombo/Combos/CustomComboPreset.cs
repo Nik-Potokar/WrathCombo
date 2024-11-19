@@ -163,6 +163,71 @@ namespace XIVSlothCombo.Combos
 
         #endregion
 
+        #region Potions
+        [CustomComboInfo("Potion Menu", "Add Potion ID's for each of the roles.", Item.JobID)]
+        Potion_Menu = 10000094,
+
+        [ParentCombo(Potion_Menu)]
+        [CustomComboInfo("Use only in raid", "Uses potions only in 8 man parties.", Item.JobID)]
+        UsePotionOnlyInRaid = 100000121,
+
+        [ParentCombo(Potion_Menu)]
+        [ConflictingCombos(PotionAllowUnbuffed)]
+        [CustomComboInfo("Use Potions ONLY in buff windows", "Aligns potion usage with 2 minute burst windows.", Item.JobID)]
+        PotionOnlyOnBuffs = 100000122,
+
+        [ParentCombo(Potion_Menu)]
+        [ConflictingCombos(PotionOnlyOnBuffs)]
+        [CustomComboInfo("Allow Unbuffed Potion", "Allows the use of the unbuffed potion - Great for shorter fights aka non-ultimate.", Item.JobID)]
+        PotionAllowUnbuffed = 100000123,
+
+        [ParentCombo(Potion_Menu)]
+        [ConflictingCombos(PotionOnlyOnBuffs, PotionAllowUnbuffed)]
+        [CustomComboInfo("Custom Potion Time", "Allows you to customize when to use the potion. Time is in seconds + 30sec leeway range.", Item.JobID)]
+        PotionCustomTime = 100000124,
+
+        /*
+        [ParentCombo(Potion_Menu)]
+        [ConflictingCombos(PotionOnlyOnBuffs, PotionAllowUnbuffed)]
+        [CustomComboInfo("Custom Potion Time", "Allows you to customize your own potion times.", ADV.JobID)]
+        CustomPotionTime = 100000124,
+        */
+        // Strength Potions
+        [ParentCombo(Potion_Menu)]
+        [CustomComboInfo("Strength Potion", "Applies to all STR Potion Roles.", Item.JobID)]
+        StrengthPotion = 10000095,
+
+        // Dexterity Potions
+        [ParentCombo(Potion_Menu)]
+        [CustomComboInfo("Dexterity Potion", "Applies to all DEX Potion Roles.", Item.JobID)]
+        DexterityPotion = 10000102,
+
+        // Intelligence Potions
+        [ParentCombo(Potion_Menu)]
+        [CustomComboInfo("Intelligence Potion", "Applies to all INT Potion Roles.", Item.JobID)]
+        IntelligencePotion = 10000110,
+
+        // Mind Potions
+        [ParentCombo(Potion_Menu)]
+        [CustomComboInfo("Mind Potion", "Applies to all MND Potion Roles.", Item.JobID)]
+        MindPotion = 10000116,
+
+        #endregion
+
+        #region Extras
+
+
+        [ReplaceSkill(All.ArmsLength, All.Surecast)]
+        [CustomComboInfo("Dynamic Knockback Immunity", "Automatically switches to Surecast or ArmsLength based on your current job.", ADV.JobID)]
+        ALL_Dynamic_Knockback_Immunity = 10000150,
+
+        [CustomComboInfo("Action Changer", "Changes actions on the fly", ADV.JobID)]
+        ALL_CustomActionChanger = 10000151,
+
+
+        #endregion
+
+
         //Non-gameplay Features
         //[CustomComboInfo("Output Combat Log", "Outputs your performed actions to the chat.", ADV.JobID)]
         //AllOutputCombatLog = 100094,

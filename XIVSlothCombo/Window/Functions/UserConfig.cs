@@ -7,6 +7,7 @@ using ImGuiNET;
 using System;
 using System.Numerics;
 using XIVSlothCombo.Combos;
+using XIVSlothCombo.Combos.PvE;
 using XIVSlothCombo.Combos.PvP;
 using XIVSlothCombo.Core;
 using XIVSlothCombo.CustomComboNS.Functions;
@@ -1173,6 +1174,136 @@ namespace XIVSlothCombo.Window.Functions
             double sliderAsDouble = Convert.ToDouble(sliderIncrement);
             return ((int)Math.Round(i / sliderAsDouble)) * (int)sliderIncrement;
         }
+
+        public static void DrawInputBoxInt(string config, string inputDescription, float itemWidth = 150, bool hasAdditionalChoice = false, string additionalChoiceCondition = "")
+        {
+            // Retrieve the current value
+            int output = PluginConfiguration.GetCustomIntValue(config, 0);
+
+            // Render the input box
+            InfoBox box = new()
+            {
+                Color = Colors.White,
+                BorderThickness = 1f,
+                CurveRadius = 3f,
+                AutoResize = true,
+                HasMaxWidth = true,
+                IsSubBox = true,
+                ContentsAction = () =>
+                {
+                    bool inputChanged = false;
+                    Vector2 currentPos = ImGui.GetCursorPos();
+                    ImGui.SetCursorPosX(currentPos.X + itemWidth);
+                    ImGui.PushTextWrapPos(ImGui.GetContentRegionMax().X - 35f);
+                    ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudWhite);
+                    ImGui.Text(inputDescription);
+                    ImGui.PopStyleColor();
+                    ImGui.PopTextWrapPos();
+
+                    if (hasAdditionalChoice)
+                    {
+                        ImGui.SameLine();
+                        ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
+                        ImGui.PushFont(UiBuilder.IconFont);
+                        ImGui.Dummy(new Vector2(5, 0));
+                        ImGui.SameLine();
+                        ImGui.TextWrapped($"{FontAwesomeIcon.Search.ToIconString()}");
+                        ImGui.PopFont();
+                        ImGui.PopStyleColor();
+
+                        if (ImGui.IsItemHovered())
+                        {
+                            ImGui.BeginTooltip();
+                            ImGui.TextUnformatted($"This setting has additional options depending on its value.{(string.IsNullOrEmpty(additionalChoiceCondition) ? "" : $"\nCondition: {additionalChoiceCondition}")}");
+                            ImGui.EndTooltip();
+                        }
+                    }
+
+                    ImGui.SameLine();
+                    ImGui.SetCursorPosX(currentPos.X);
+                    ImGui.PushItemWidth(itemWidth);
+                    inputChanged |= ImGui.InputInt($"###{config}", ref output);
+
+                    if (inputChanged)
+                    {
+                        // Save the updated value
+                        PluginConfiguration.SetCustomIntValue(config, output);
+                        Service.Configuration.Save();
+                    }
+                }
+            };
+
+            box.Draw();
+            ImGui.Spacing();
+        }
+
+        /// <summary> Draws an input box that lets the user set a given float value for their feature. </summary>
+        /// <param name="config"> The config ID. </param>
+        /// <param name="inputDescription"> Description of the input box. Appends to the right of the input box. </param>
+        /// <param name="itemWidth"> How wide the input box should be. </param>
+        /// <param name="hasAdditionalChoice"> Whether there is an additional choice. </param>
+        /// <param name="additionalChoiceCondition"> Description for the additional choice condition. </param>
+        public static void DrawFloatInputBox(string config, string inputDescription, float itemWidth = 150, bool hasAdditionalChoice = false, string additionalChoiceCondition = "")
+        {
+            // Retrieve the current value
+            float output = PluginConfiguration.GetCustomFloatValue(config, 0.0f);
+
+            // Render the input box
+            InfoBox box = new()
+            {
+                Color = Colors.White,
+                BorderThickness = 1f,
+                CurveRadius = 3f,
+                AutoResize = true,
+                HasMaxWidth = true,
+                IsSubBox = true,
+                ContentsAction = () =>
+                {
+                    bool inputChanged = false;
+                    Vector2 currentPos = ImGui.GetCursorPos();
+                    ImGui.SetCursorPosX(currentPos.X + itemWidth);
+                    ImGui.PushTextWrapPos(ImGui.GetContentRegionMax().X - 35f);
+                    ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudWhite);
+                    ImGui.Text(inputDescription);
+                    ImGui.PopStyleColor();
+                    ImGui.PopTextWrapPos();
+
+                    if (hasAdditionalChoice)
+                    {
+                        ImGui.SameLine();
+                        ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
+                        ImGui.PushFont(UiBuilder.IconFont);
+                        ImGui.Dummy(new Vector2(5, 0));
+                        ImGui.SameLine();
+                        ImGui.TextWrapped($"{FontAwesomeIcon.Search.ToIconString()}");
+                        ImGui.PopFont();
+                        ImGui.PopStyleColor();
+
+                        if (ImGui.IsItemHovered())
+                        {
+                            ImGui.BeginTooltip();
+                            ImGui.TextUnformatted($"This setting has additional options depending on its value.{(string.IsNullOrEmpty(additionalChoiceCondition) ? "" : $"\nCondition: {additionalChoiceCondition}")}");
+                            ImGui.EndTooltip();
+                        }
+                    }
+
+                    ImGui.SameLine();
+                    ImGui.SetCursorPosX(currentPos.X);
+                    ImGui.PushItemWidth(itemWidth);
+                    inputChanged |= ImGui.InputFloat($"###{config}", ref output);
+
+                    if (inputChanged)
+                    {
+                        // Save the updated value
+                        PluginConfiguration.SetCustomFloatValue(config, output);
+                        Service.Configuration.Save();
+                    }
+                }
+            };
+
+            box.Draw();
+            ImGui.Spacing();
+        }
     }
 
     public static class UserConfigItems
@@ -1183,7 +1314,16 @@ namespace XIVSlothCombo.Window.Functions
         internal static void Draw(CustomComboPreset preset, bool enabled)
         {
             if (!enabled) return;
-
+            #region Misc
+            if (preset == CustomComboPreset.PotionCustomTime)
+            {
+                UserConfig.DrawInputBoxInt(All.Config.All_Custom_Potion_Time1, "1st Potion Window after Opener in Seconds");
+                UserConfig.DrawInputBoxInt(All.Config.All_Custom_Potion_Time2, "2nd Potion Window after Opener in Seconds");
+                UserConfig.DrawInputBoxInt(All.Config.All_Custom_Potion_Time3, "3rd Potion Window after Opener in Seconds");
+                UserConfig.DrawInputBoxInt(All.Config.All_Custom_Potion_Time4, "4th Potion Window after Opener in Seconds");
+                UserConfig.DrawInputBoxInt(All.Config.All_Custom_Potion_Time5, "5th Potion Window after Opener in Seconds");
+            }
+            #endregion
             // ====================================================================================
             // ====================================================================================
             // ====================================================================================
@@ -1285,6 +1425,145 @@ namespace XIVSlothCombo.Window.Functions
                 UserConfig.DrawSliderInt(1, 100, NINPvP.Config.NINPvP_Meisui_AoE, description);
             }
 
+
+            #endregion
+
+            #region Potions
+            // Potion Feature, Role Based
+            #region Strenght Users
+
+            // Strenght (PLD,WAR,DRK,GNB,MNK,DRG,SAM,RPR)
+            if (preset == CustomComboPreset.StrengthPotion)
+            {
+                ImGui.PushID("strength_potion"); // Add unique ID to the stack
+
+                int currentStrengthPotionId = (int)Service.Configuration.StrengthPotion;
+                bool inputChanged = false;
+
+                ImGui.PushItemWidth(120);
+                inputChanged |= ImGui.InputInt(
+                    "Custom ID (add 10 for HQ items):\nExample: 4650 Normal\n104650 High Quality",
+                    ref currentStrengthPotionId
+                );
+
+                if (inputChanged)
+                {
+                    Service.Configuration.StrengthPotion = (uint)currentStrengthPotionId;
+                    Service.Configuration.Save();
+                }
+
+                ImGui.PopID(); // Remove unique ID from the stack
+                ImGui.Spacing();
+            }
+
+            // Dexterity (BRD,NIN,MCH,DNC)
+            if (preset == CustomComboPreset.DexterityPotion)
+            {
+                ImGui.PushID("dexterity_potion"); // add unique ID to the stack
+
+                int currentStrengthPotionId = (int)Service.Configuration.DexterityPotion;
+                bool inputChanged = false;
+
+                ImGui.PushItemWidth(120);
+                inputChanged |= ImGui.InputInt(
+                    "Custom ID (add 10 for HQ items):\nExample: 4650 Normal\n104650 High Quality",
+                    ref currentStrengthPotionId
+                );
+
+                if (inputChanged)
+                {
+                    Service.Configuration.DexterityPotion = (uint)currentStrengthPotionId;
+                    Service.Configuration.Save();
+                }
+
+                ImGui.PopID(); // Remove unique ID from the stack
+                ImGui.Spacing();
+            }
+
+
+            #endregion
+
+            #region Intelligence Users
+
+            // Intelligence (BLM,SMN,RDM,BLU)
+            if (preset == CustomComboPreset.IntelligencePotion)
+            {
+                ImGui.PushID("intelligence_Potion"); // add unique ID to the stack
+
+                int currentStrengthPotionId = (int)Service.Configuration.InteligencePotion;
+                bool inputChanged = false;
+
+                ImGui.PushItemWidth(120);
+                inputChanged |= ImGui.InputInt(
+                    "Custom ID (add 10 for HQ items):\nExample: 4650 Normal\n104650 High Quality",
+                    ref currentStrengthPotionId
+                );
+
+                if (inputChanged)
+                {
+                    Service.Configuration.InteligencePotion = (uint)currentStrengthPotionId;
+                    Service.Configuration.Save();
+                }
+
+                ImGui.PopID(); // Remove unique ID from the stack
+                ImGui.Spacing();
+            }
+
+            #endregion
+
+            #region Mind Users
+
+            // Mind Classes (WHM,SCH,AST)
+            if (preset == CustomComboPreset.MindPotion)
+            {
+                ImGui.PushID("Mind_Potion"); // add unique ID to the stack
+
+                int currentStrengthPotionId = (int)Service.Configuration.MindPotion;
+                bool inputChanged = false;
+
+                ImGui.PushItemWidth(120);
+                inputChanged |= ImGui.InputInt(
+                    "Custom ID (add 10 for HQ items):\nExample: 4650 Normal\n104650 High Quality",
+                    ref currentStrengthPotionId
+                );
+
+                if (inputChanged)
+                {
+                    Service.Configuration.MindPotion = (uint)currentStrengthPotionId;
+                    Service.Configuration.Save();
+                }
+
+                ImGui.PopID(); // Remove unique ID from the stack
+                ImGui.Spacing();
+            }
+
+            #endregion
+
+            #region Actions
+
+            if (preset == CustomComboPreset.ALL_CustomActionChanger)
+            {
+                var startingAction = (int)Service.Configuration.cActionId;
+                var adjustedAction = (int)Service.Configuration.aActionId;
+                bool sAinputChanged = false;
+                bool aAinputChanged = false;
+
+                ImGui.PushItemWidth(120);
+                sAinputChanged |= ImGui.InputInt("Input Starting Action ID: ", ref startingAction);
+                if (sAinputChanged)
+                {
+                    Service.Configuration.cActionId = (uint)startingAction;
+                    Service.Configuration.Save();
+                }
+                ImGui.PushItemWidth(120);
+                aAinputChanged |= ImGui.InputInt("Input Ending Action ID: ", ref adjustedAction);
+                if (aAinputChanged)
+                {
+                    Service.Configuration.aActionId = (uint)adjustedAction;
+                    Service.Configuration.Save();
+                }
+            }
+            #endregion
 
             #endregion
         }

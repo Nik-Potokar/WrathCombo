@@ -249,5 +249,19 @@ namespace XIVSlothCombo.Core
         public void Save() => Svc.PluginInterface.SavePluginConfig(this);
 
         #endregion
+
+        #region Potions
+        public uint UserInputCustomId { get; set; } = new uint();
+        public uint StrengthPotion { get; set; } = new uint();
+        public uint DexterityPotion { get; set; } = new uint();
+        public uint InteligencePotion { get; set; } = new uint();
+        public uint MindPotion { get; set; } = new uint();
+        #endregion
+
+        #region Actions
+        public uint cActionId { get; set; } = new uint();
+        public uint aActionId { get; set; } = new uint();
+
+        #endregion
     }
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using XIVSlothCombo.Combos.PvE;
 using XIVSlothCombo.CustomComboNS.Functions;
+using Item = XIVSlothCombo.Combos.PvE.Item;
 
 namespace XIVSlothCombo.Attributes
 {

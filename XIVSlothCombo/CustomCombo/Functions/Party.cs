@@ -2,6 +2,7 @@
 using ECommons.DalamudServices;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using XIVSlothCombo.Services;
 
 namespace XIVSlothCombo.CustomComboNS.Functions
@@ -16,6 +17,8 @@ namespace XIVSlothCombo.CustomComboNS.Functions
 
             else return false;
         }
+
+        public static bool IsInRaid() => (Svc.Party.Length > 4);
 
         /// <summary> Gets the party list </summary>
         /// <returns> Current party list. </returns>
@@ -89,5 +92,47 @@ namespace XIVSlothCombo.CustomComboNS.Functions
             }
             return PartyCount == 0 ? 0 : (float)BuffCount / PartyCount * 100f; //Div by 0 check...just in case....
         }
+
+        public static string GetFarthestPartyMemberName()
+        {
+            const string defaultName = "Not in a Party!";
+            if (!IsInParty())
+            {
+                return defaultName;
+            }
+
+            var localPlayer = LocalPlayer;
+            var otherPlayers = Svc.Party;
+
+
+            var distances = from player in otherPlayers
+                            let distance = Vector3.Distance(localPlayer.Position, player.Position)
+                            orderby distance descending
+                            select new { Name = player.Name.TextValue, Distance = distance };
+
+            return distances.FirstOrDefault()?.Name ?? defaultName;
+        }
+
+        public static double GetFarthestPartyMemberDistance()
+        {
+            const double defaultDistance = 0;
+            if (!IsInParty())
+            {
+                return defaultDistance;
+            }
+
+            var localPlayer = LocalPlayer;
+            var otherPlayers = Svc.Party;
+
+            var distances = from player in otherPlayers
+                            let distance = Vector3.Distance(localPlayer.Position, player.Position)
+                            orderby distance descending
+                            select distance;
+
+
+            return distances.FirstOrDefault() > 0 ? distances.FirstOrDefault() : defaultDistance;
+        }
+
+
     }
 }
