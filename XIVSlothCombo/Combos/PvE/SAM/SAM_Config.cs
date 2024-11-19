@@ -92,6 +92,11 @@ internal partial class SAM
 
                     break;
 
+                case CustomComboPreset.SAMPvP_BurstMode_Zantetsuken:
+                    UserConfig.DrawSliderInt(1, 10, SAMPvP.Config.SAMPVP_Zantetsuken,
+                        "Use when set amount of enemies have Kuzushi status.");
+                    break;
+
                 case CustomComboPreset.SAM_ST_KashaCombo:
                 {
                     UserConfig.DrawAdditionalBoolChoice(SAM_Kasha_KenkiOvercap, "Kenki Overcap Protection",

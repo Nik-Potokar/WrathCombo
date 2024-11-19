@@ -1,3 +1,4 @@
+using XIVSlothCombo.Combos.PvP;
 using static XIVSlothCombo.Window.Functions.UserConfig;
 
 namespace XIVSlothCombo.Combos.PvE;
@@ -50,6 +51,11 @@ internal partial class BRD
                 case CustomComboPreset.BRD_Variant_Cure:
                     DrawSliderInt(1, 100, BRD_VariantCure, "HP% to be at or under", 200);
 
+                    break;
+
+                //PVP
+                case CustomComboPreset.BRDPvP_HarmonicArrow:
+                    DrawSliderInt(1, 4, BRDPvP.Config.BRDPvP_HarmonicArrowsCharges, "Use Harmonic Arrow at set charges", 200);
                     break;
             }
         }
