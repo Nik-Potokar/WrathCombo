@@ -12,7 +12,7 @@ env:
   PUBLIC_NAME: WrathCombo
   SOLUTION_NAME: WrathCombo
   INTERNAL_NAME: WrathCombo
-  RELEASE_DIR: WrathCombo\bin\Release\WrathCombo
+  RELEASE_DIR: XIVSlothCombo\bin\Release\WrathCombo
   PERSONAL_PLUGIN_REPO: Nik-Potokar/DolomudPlogons
   PR_PLUGIN_REPO: Nik-Potokar/DolomudPlogons
 
