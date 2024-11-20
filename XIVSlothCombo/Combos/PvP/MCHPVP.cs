@@ -71,7 +71,7 @@ namespace XIVSlothCombo.Combos.PvP
 
 
                         // FullMetalField condition when not overheated or if overheated and FullMetalField is off cooldown
-                        if (IsEnabled(CustomComboPreset.MCHPvP_BurstMode_FullMetalField) && overheated && IsOffCooldown(FullMetalField))
+                        if (IsEnabled(CustomComboPreset.MCHPvP_BurstMode_FullMetalField) && overheated && GetBuffRemainingTime(Buffs.Overheated) <= 5 && IsOffCooldown(FullMetalField))
                             return FullMetalField;
 
                         // If overheated, BlazingShot is the next action
