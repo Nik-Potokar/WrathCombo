@@ -35,7 +35,7 @@ namespace XIVSlothCombo.AutoRotation
 
             if (Player.Object.CurrentCastTime > 0) return;
 
-            if (!EzThrottler.Throttle("AutoRotController", 150))
+            if (!EzThrottler.Throttle("AutoRotController", 10))
                 return;
 
             if (cfg.HealerSettings.PreEmptiveHoT && Player.Job is Job.CNJ or Job.WHM or Job.AST)
@@ -215,7 +215,7 @@ namespace XIVSlothCombo.AutoRotation
 
         }
 
-        private static bool AutomateDPS(CustomComboPreset preset, Presets.PresetAttributes attributes, uint gameAct)
+        private unsafe static bool AutomateDPS(CustomComboPreset preset, Presets.PresetAttributes attributes, uint gameAct)
         {
             if (Svc.Targets.Target != null && !Svc.Targets.Target.IsHostile()) return false;
 
@@ -302,7 +302,8 @@ namespace XIVSlothCombo.AutoRotation
             {
                 if (attributes.AutoAction.IsHeal)
                 {
-                    uint outAct = InvokeCombo(preset, attributes, Player.Object);
+                    uint outAct = CustomComboFunctions.OriginalHook(InvokeCombo(preset, attributes, Player.Object));
+                    if (ActionManager.Instance()->GetActionStatus(ActionType.Action, outAct) != 0) return false;
                     if (!CustomComboFunctions.ActionReady(outAct))
                         return false;
 
@@ -322,7 +323,8 @@ namespace XIVSlothCombo.AutoRotation
                 }
                 else
                 {
-                    uint outAct = InvokeCombo(preset, attributes, Player.Object);
+                    uint outAct = CustomComboFunctions.OriginalHook(InvokeCombo(preset, attributes, Player.Object));
+                    if (ActionManager.Instance()->GetActionStatus(ActionType.Action, outAct) != 0) return false;
                     if (!CustomComboFunctions.ActionReady(outAct))
                         return false;
 
@@ -352,7 +354,8 @@ namespace XIVSlothCombo.AutoRotation
                 if (target is null)
                     return false;
 
-                var outAct = InvokeCombo(preset, attributes, target);
+                var outAct = CustomComboFunctions.OriginalHook(InvokeCombo(preset, attributes, target));
+                if (ActionManager.Instance()->GetActionStatus(ActionType.Action, outAct) != 0) return false;
                 var castTime = ActionManager.GetAdjustedCastTime(ActionType.Action, outAct);
                 if (CustomComboFunctions.IsMoving && castTime > 0)
                     return false;

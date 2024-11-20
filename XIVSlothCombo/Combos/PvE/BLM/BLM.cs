@@ -1,4 +1,6 @@
+using ECommons.DalamudServices;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using XIVSlothCombo.Combos.PvE.Content;
 using XIVSlothCombo.CustomComboNS;
 using XIVSlothCombo.Data;
@@ -416,7 +418,7 @@ internal static partial class BLM
                 return OriginalHook(Fire2);
 
             if ((HasEffect(Buffs.Thunderhead) && gcdsInTimer > 1 && Thunder2.LevelChecked() &&
-                 thunderDebuffAoE is null) || thunderDebuffAoE.RemainingTime < 3)
+                 thunderDebuffAoE is null) || thunderDebuffAoE?.RemainingTime < 3)
                 return OriginalHook(Thunder2);
 
             if (ActionReady(Amplifier) && remainingPolyglotCD >= 20000 && CanSpellWeave(ActionWatching.LastSpell))
@@ -557,7 +559,7 @@ internal static partial class BLM
             if ((IsEnabled(CustomComboPreset.BLM_AoE_Thunder) &&
                  HasEffect(Buffs.Thunderhead) && gcdsInTimer > 1 && LevelChecked(Thunder2) &&
                  GetTargetHPPercent() >= Config.BLM_AoE_ThunderHP &&
-                 thunderDebuffAoE is null) || thunderDebuffAoE.RemainingTime < 3)
+                 thunderDebuffAoE is null) || thunderDebuffAoE?.RemainingTime < 3)
                 return OriginalHook(Thunder2);
 
             if (IsEnabled(CustomComboPreset.BLM_AoE_Amplifier) &&

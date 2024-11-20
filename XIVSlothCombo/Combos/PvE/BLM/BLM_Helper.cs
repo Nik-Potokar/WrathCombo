@@ -15,7 +15,7 @@ internal partial class BLM
     // BLM Gauge & Extensions
     public static BLMGauge Gauge = GetJobGauge<BLMGauge>();
 
-    public static bool canWeave = CanSpellWeave(ActionWatching.LastSpell);
+    public static bool canWeave => CanSpellWeave(ActionWatching.LastSpell);
     public static BLMOpenerLogic BLMOpener = new();
 
     public static uint curMp => LocalPlayer.CurrentMp;
@@ -27,7 +27,7 @@ internal partial class BLM
 
     public static float elementTimer => Gauge.ElementTimeRemaining / 1000f;
 
-    public static double gcdsInTimer => Math.Floor(elementTimer / GetActionCastTime(ActionWatching.LastSpell));
+    public static double gcdsInTimer => Math.Floor(elementTimer / GetActionCastTime(Gauge.InAstralFire ? Fire : Blizzard));
 
     public static int remainingPolyglotCD => Math.Max(0,
         (maxPolyglot - Gauge.PolyglotStacks) * 30000 + (Gauge.EnochianTimer - 30000));
@@ -96,6 +96,9 @@ internal partial class BLM
                 return false;
 
             if (!ActionReady(Amplifier))
+                return false;
+
+            if (Gauge.InUmbralIce)
                 return false;
 
             return true;
