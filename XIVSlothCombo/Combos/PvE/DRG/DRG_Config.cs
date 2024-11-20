@@ -43,7 +43,8 @@ internal partial class DRG
 
                     break;
 
-                case CustomComboPreset.DRG_Variant_Cure: DrawSliderInt(1, 100, DRG_Variant_Cure, "HP% to be at or under", 200);
+                case CustomComboPreset.DRG_Variant_Cure:
+                    DrawSliderInt(1, 100, DRG_Variant_Cure, "HP% to be at or under", 200);
 
                     break;
 
@@ -74,12 +75,12 @@ internal partial class DRG
                 case CustomComboPreset.DRGPvP_Nastrond:
                     DrawSliderInt(0, 100, DRGPvP.Config.DRGPvP_LOTD_HPValue,
                         "Ends Life of the Dragon if HP falls below the set percentage");
-                    
+
                     DrawSliderInt(2, 8, DRGPvP.Config.DRGPvP_LOTD_Duration,
                         "Seconds remaining of Life of the Dragon buff before using Nastrond if you are still above the set HP percentage.");
 
                     break;
-                
+
                 case CustomComboPreset.DRGPvP_ChaoticSpringSustain:
                     DrawSliderInt(0, 101, DRGPvP.Config.DRGPvP_CS_HP_Threshold,
                         "Chaos Spring HP percentage threshold");

@@ -86,7 +86,7 @@ namespace XIVSlothCombo.Combos.PvE
             {
                 if (actionID is FireInRed)
                 {
-                    var gauge = GetJobGauge<PCTGauge>();
+                    PCTGauge gauge = GetJobGauge<PCTGauge>();
                     bool canWeave = CanSpellWeave(ActionWatching.LastSpell) || CanSpellWeave(actionID);
 
                     // Variant Cure
@@ -348,13 +348,12 @@ namespace XIVSlothCombo.Combos.PvE
             {
                 if (actionID is FireInRed)
                 {
-                    var gauge = GetJobGauge<PCTGauge>();
+                    PCTGauge gauge = GetJobGauge<PCTGauge>();
                     bool canWeave = CanSpellWeave(ActionWatching.LastSpell) || CanSpellWeave(actionID);
                     int creatureStop = PluginConfiguration.GetCustomIntValue(Config.PCT_ST_CreatureStop);
                     int landscapeStop = PluginConfiguration.GetCustomIntValue(Config.PCT_ST_LandscapeStop);
                     int weaponStop = PluginConfiguration.GetCustomIntValue(Config.PCT_ST_WeaponStop);
                     
-
                     // Variant Cure
                     if (IsEnabled(CustomComboPreset.PCT_Variant_Cure) &&
                         IsEnabled(Variant.VariantCure) &&
@@ -494,7 +493,8 @@ namespace XIVSlothCombo.Combos.PvE
                     }
 
                     // Swiftcast Motifs
-                    if (HasEffect(All.Buffs.Swiftcast))
+                    if (IsEnabled(CustomComboPreset.PCT_ST_AdvancedMode_SwiftMotifs) &&
+                        HasEffect(All.Buffs.Swiftcast))
                     {
                         if (!gauge.CreatureMotifDrawn && CreatureMotif.LevelChecked() && !HasEffect(Buffs.StarryMuse) && GetTargetHPPercent() > creatureStop)
                             return OriginalHook(CreatureMotif);
@@ -653,14 +653,14 @@ namespace XIVSlothCombo.Combos.PvE
 
 
                     if (!InCombat() || InCombat() && CurrentTarget == null)
-                        {
-                            if (CreatureMotif.LevelChecked() && !gauge.CreatureMotifDrawn)
-                                return OriginalHook(CreatureMotif);
-                            if (WeaponMotif.LevelChecked() && !gauge.WeaponMotifDrawn && !HasEffect(Buffs.HammerTime))
-                                return OriginalHook(WeaponMotif);
-                            if (LandscapeMotif.LevelChecked() && !gauge.LandscapeMotifDrawn && !HasEffect(Buffs.StarryMuse))
-                                return OriginalHook(LandscapeMotif);
-                        }
+                    {
+                        if (CreatureMotif.LevelChecked() && !gauge.CreatureMotifDrawn) 
+                            return OriginalHook(CreatureMotif);
+                        if (WeaponMotif.LevelChecked() && !gauge.WeaponMotifDrawn && !HasEffect(Buffs.HammerTime))
+                            return OriginalHook(WeaponMotif);
+                        if (LandscapeMotif.LevelChecked() && !gauge.LandscapeMotifDrawn && !HasEffect(Buffs.StarryMuse))
+                            return OriginalHook(LandscapeMotif);
+                    }
                     
 
                     // General Weaves

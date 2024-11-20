@@ -176,6 +176,10 @@ namespace XIVSlothCombo.Window.Tabs
                     {
                         Service.Configuration.EnabledActions.Remove(preset);
                         Service.Configuration.Save();
+
+                        // Keep removed items in the counter
+                        var parent = PresetStorage.GetParent(preset) ?? preset;
+                        i += 1 + Presets.AllChildren(presetChildren[parent]);
                     }
 
                     else

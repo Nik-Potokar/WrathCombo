@@ -40,13 +40,12 @@ namespace XIVSlothCombo
 
         private readonly ConfigWindow ConfigWindow;
         private readonly TargetHelper TargetHelper;
-        internal readonly AboutUs AboutUs;
         internal static XIVSlothCombo? P = null!;
         internal WindowSystem ws;
         private readonly HttpClient httpClient = new();
         private IDtrBarEntry DtrBarEntry;
 
-        private readonly TextPayload starterMotd = new("[Sloth Message of the Day] ");
+        private readonly TextPayload starterMotd = new("[Wrath Message of the Day] ");
         private static uint? jobID;
 
         public static readonly List<uint> DisabledJobsPVE =
@@ -114,7 +113,6 @@ namespace XIVSlothCombo
 
             ConfigWindow = new ConfigWindow();
             TargetHelper = new();
-            AboutUs = new();
             ws = new();
             ws.AddWindow(ConfigWindow);
             ws.AddWindow(TargetHelper);
@@ -237,7 +235,7 @@ namespace XIVSlothCombo
             try
             {
                 string basicMessage = $"Welcome to XIVSlothCombo v{this.GetType().Assembly.GetName().Version}!";
-                using HttpResponseMessage? motd = httpClient.GetAsync("https://raw.githubusercontent.com/Nik-Potokar/XIVSlothCombo/main/res/motd.txt").Result;
+                using HttpResponseMessage? motd = httpClient.GetAsync("https://raw.githubusercontent.com/PunishXIV/WrathCombo/main/res/motd.txt").Result;
                 motd.EnsureSuccessStatusCode();
                 string? data = motd.Content.ReadAsStringAsync().Result;
                 List<Payload>? payloads =
@@ -427,23 +425,36 @@ namespace XIVSlothCombo
 
                             string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
+                            string[]? conflictingPlugins = ConflictingPluginsCheck.TryGetConflictingPlugins();
+                            int conflictingPluginsCount = conflictingPlugins?.Length ?? 0;
+
+                            string repoURL = RepoCheckFunctions.FetchCurrentRepo()?.InstalledFromUrl ?? "Unknown";
+                            string currentZone = Svc.Data.GetExcelSheet<TerritoryType>()?
+                                .FirstOrDefault(x => x.RowId == Svc.ClientState.TerritoryType)
+                                .PlaceName.Value.Name.ToString() ?? "Unknown";
+
                             using StreamWriter file = new($"{desktopPath}/WrathDebug.txt", append: false);  // Output path
 
                             file.WriteLine("START DEBUG LOG");
                             file.WriteLine("");
-                            file.WriteLine($"Plugin Version: {GetType().Assembly.GetName().Version}");                          // Plugin version
+                            file.WriteLine($"Plugin Version: {GetType().Assembly.GetName().Version}");                   // Plugin version
+                            file.WriteLine($"Installation Repo: {repoURL}");                                             // Installation Repo
                             file.WriteLine("");
-                            file.WriteLine($"Installation Repo: {RepoCheckFunctions.FetchCurrentRepo()?.InstalledFromUrl}");    // Installation Repo
-                            file.WriteLine("");
-                            file.WriteLine($"Current Job: " +                                                                   // Current Job
+                            file.WriteLine($"Conflicting Plugins: {conflictingPluginsCount}");                           // Conflicting Plugins
+                            if (conflictingPlugins != null) {
+                                foreach (var plugin in conflictingPlugins)
+                                    file.WriteLine($"- {plugin}");                                                       // Listing Conflicting Plugin
+                                file.WriteLine("");
+                            }
+                            file.WriteLine($"Current Job: " +                                                            // Current Job
                                 $"{Svc.ClientState.LocalPlayer.ClassJob.Value.Name} / " +                                // - Client Name
                                 $"{Svc.ClientState.LocalPlayer.ClassJob.Value.NameEnglish} / " +                         // - EN Name
                                 $"{Svc.ClientState.LocalPlayer.ClassJob.Value.Abbreviation}");                           // - Abbreviation
-                            file.WriteLine($"Current Job Index: {Svc.ClientState.LocalPlayer.ClassJob.RowId}");                // Job Index
-                            file.WriteLine($"Current Job Level: {Svc.ClientState.LocalPlayer.Level}");                      // Job Level
+                            file.WriteLine($"Current Job Index: {Svc.ClientState.LocalPlayer.ClassJob.RowId}");          // Job Index
+                            file.WriteLine($"Current Job Level: {Svc.ClientState.LocalPlayer.Level}");                   // Job Level
                             file.WriteLine("");
-                            file.WriteLine($"Current Zone: {Svc.Data.GetExcelSheet<TerritoryType>()?.FirstOrDefault(x => x.RowId == Svc.ClientState.TerritoryType).PlaceName.Value.Name}");   // Current zone location
-                            file.WriteLine($"Current Party Size: {Svc.Party.Length}");                                  // Current party size
+                            file.WriteLine($"Current Zone: {currentZone}");                                              // Current zone location
+                            file.WriteLine($"Current Party Size: {Svc.Party.Length}");                                   // Current party size
                             file.WriteLine("");
                             file.WriteLine($"START ENABLED FEATURES");
 
@@ -593,7 +604,7 @@ namespace XIVSlothCombo
                             }
 
                             file.WriteLine("END DEBUG LOG");
-                            Svc.Chat.Print("Please check your desktop for SlothDebug.txt and upload this file where requested.");
+                            Svc.Chat.Print("Please check your desktop for WrathDebug.txt and upload this file where requested.");
 
                             break;
                         }

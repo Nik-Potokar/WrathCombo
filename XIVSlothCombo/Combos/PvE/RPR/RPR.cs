@@ -192,14 +192,7 @@ internal partial class RPR
 
         protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
         {
-            bool trueNorthDynReady = trueNorthReady;
             int PositionalChoice = Config.RPR_Positional;
-
-            // Prevent the dynamic true north option from using the last charge
-            if (IsEnabled(CustomComboPreset.RPR_ST_TrueNorthDynamic) &&
-                IsEnabled(CustomComboPreset.RPR_ST_TrueNorthDynamic_HoldCharge) &&
-                GetRemainingCharges(All.TrueNorth) < 2 && trueNorthReady)
-                trueNorthDynReady = false;
 
             // Don't change anything if not basic skill
             if (actionID is not Slice)
@@ -324,7 +317,10 @@ internal partial class RPR
                          !HasEffect(Buffs.EnhancedGallows)))
                     {
                         if (IsEnabled(CustomComboPreset.RPR_ST_TrueNorthDynamic) &&
-                            trueNorthDynReady && !OnTargetsFlank() &&
+                            ((IsEnabled(CustomComboPreset.RPR_ST_TrueNorthDynamic_HoldCharge) &&
+                              GetRemainingCharges(All.TrueNorth) < 2) ||
+                             IsNotEnabled(CustomComboPreset.RPR_ST_TrueNorthDynamic_HoldCharge)) &&
+                            trueNorthReady && !OnTargetsFlank() &&
                             CanDelayedWeave(ActionWatching.LastWeaponskill))
                             return All.TrueNorth;
 
@@ -337,7 +333,10 @@ internal partial class RPR
                          !HasEffect(Buffs.EnhancedGallows)))
                     {
                         if (IsEnabled(CustomComboPreset.RPR_ST_TrueNorthDynamic) &&
-                            trueNorthDynReady && !OnTargetsRear() &&
+                            ((IsEnabled(CustomComboPreset.RPR_ST_TrueNorthDynamic_HoldCharge) &&
+                              GetRemainingCharges(All.TrueNorth) < 2) ||
+                             IsNotEnabled(CustomComboPreset.RPR_ST_TrueNorthDynamic_HoldCharge)) &&
+                            trueNorthReady && !OnTargetsRear() &&
                             CanDelayedWeave(ActionWatching.LastWeaponskill))
                             return All.TrueNorth;
 

@@ -226,7 +226,7 @@ internal partial class DRG
         }
     }
 
-    internal class AnimationLock
+    internal class DRGHelper
     {
         internal static readonly List<uint> FastLocks =
         [

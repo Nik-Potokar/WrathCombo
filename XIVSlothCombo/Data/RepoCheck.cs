@@ -14,18 +14,31 @@ namespace XIVSlothCombo.Data
         public static RepoCheck? FetchCurrentRepo()
         {
             FileInfo? f = Svc.PluginInterface.AssemblyLocation;
-            var manifest = Path.Join(f.DirectoryName, "XIVSlothCombo.json");
 
-            if (File.Exists(manifest))
+            // Flag as self-built if in dev mode
+            if (Svc.PluginInterface.IsDev)
+            {
+                return new RepoCheck
+                {
+                    InstalledFromUrl = "!! Self-Built !!"
+                };
+            }
+            var manifest = Path.Join(f.DirectoryName, "WrathCombo.json");
+
+            // Load the manifest
+            try
             {
                 RepoCheck? repo = JsonConvert.DeserializeObject<RepoCheck>(File.ReadAllText(manifest));
-                return repo;
+
+                // Check if we were able to read the manifest and its repo URL
+                return repo?.InstalledFromUrl is null ? null : repo;
             }
-            else
+            catch
             {
-                return null;
+                // ignored
             }
 
+            return null;
         }
 
         public static bool IsFromSlothRepo()
@@ -35,7 +48,7 @@ namespace XIVSlothCombo.Data
 
             if (repo.InstalledFromUrl is null) return false;
 
-            if (repo.InstalledFromUrl == "https://raw.githubusercontent.com/Nik-Potokar/MyDalamudPlugins/main/pluginmaster.json")
+            if (repo.InstalledFromUrl == "https://love.puni.sh/ment.json")
                 return true;
             else
                 return false;

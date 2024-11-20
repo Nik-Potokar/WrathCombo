@@ -1539,8 +1539,8 @@ namespace XIVSlothCombo.Combos
         DRG_ST_DragonfireDive = 6107,
 
         [ParentCombo(DRG_ST_DragonfireDive)]
-        [CustomComboInfo("Dragonfire Dive movement option", "Adds Dragonfire Dive to the rotation when not moving.", DRG.JobID)]
-        DRG_ST_DragonfireDive_Movement = 6108,
+        [CustomComboInfo("Dragonfire Dive Melee option", "Adds Dragonfire Dive to the rotation when in the target ring (1 yalm) & when not moving.", DRG.JobID)]
+        DRG_ST_DragonfireDive_Melee = 6108,
 
         [ParentCombo(DRG_ST_CDs)]
         [CustomComboInfo("Rise of the Dragon Option", "Adds Rise of the Dragon to the rotation.", DRG.JobID)]
@@ -1551,8 +1551,8 @@ namespace XIVSlothCombo.Combos
         DRG_ST_Stardiver = 6110,
 
         [ParentCombo(DRG_ST_Stardiver)]
-        [CustomComboInfo("Stardiver movement option", "Adds Stardiver to the rotation when not moving.", DRG.JobID)]
-        DRG_ST_Stardiver_Movement = 6111,
+        [CustomComboInfo("Stardiver Melee option", "Adds Stardiver to the rotation when in the target ring (1 yalm) & when not moving.", DRG.JobID)]
+        DRG_ST_Stardiver_Melee = 6111,
 
         [ParentCombo(DRG_ST_CDs)]
         [CustomComboInfo("Starcross Option", "Adds Starcross to the rotation.", DRG.JobID)]
@@ -1563,8 +1563,8 @@ namespace XIVSlothCombo.Combos
         DRG_ST_HighJump = 6113,
 
         [ParentCombo(DRG_ST_HighJump)]
-        [CustomComboInfo("(High) Jump movement option", "Adds (High) Jump to the rotation when not moving.", DRG.JobID)]
-        DRG_ST_HighJump_Movement = 6114,
+        [CustomComboInfo("(High) Jump Melee option", "Adds (High) Jump to the rotation when in the target ring (1 yalm) & when not moving.", DRG.JobID)]
+        DRG_ST_HighJump_Melee = 6114,
 
         [ParentCombo(DRG_ST_HighJump)]
         [CustomComboInfo("Mirage Dive Option", "Adds Mirage Dive to the rotation.", DRG.JobID)]
@@ -1641,8 +1641,8 @@ namespace XIVSlothCombo.Combos
         DRG_AoE_DragonfireDive = 6207,
 
         [ParentCombo(DRG_AoE_DragonfireDive)]
-        [CustomComboInfo("Dragonfire Dive movement option", "Adds Dragonfire Dive to the rotation when not moving.", DRG.JobID)]
-        DRG_AoE_DragonfireDive_Movement = 6208,
+        [CustomComboInfo("Dragonfire Dive Melee option", "Adds Dragonfire Dive to the rotation when in the target ring (1 yalm) & when not moving.", DRG.JobID)]
+        DRG_AoE_DragonfireDive_Melee = 6208,
 
         [ParentCombo(DRG_AoE_CDs)]
         [CustomComboInfo("Rise of the Dragon Option", "Adds Rise of the Dragon to the rotation.", DRG.JobID)]
@@ -1653,8 +1653,8 @@ namespace XIVSlothCombo.Combos
         DRG_AoE_Stardiver = 6210,
 
         [ParentCombo(DRG_AoE_Stardiver)]
-        [CustomComboInfo("Stardiver movement option", "Adds Stardiver to the rotation when not moving.", DRG.JobID)]
-        DRG_AoE_Stardiver_Movement = 6211,
+        [CustomComboInfo("Stardiver Melee option", "Adds Stardiver to the rotation when in the target ring (1 yalm) & when not moving.", DRG.JobID)]
+        DRG_AoE_Stardiver_Melee = 6211,
 
         [ParentCombo(DRG_AoE_CDs)]
         [CustomComboInfo("Starcross Option", "Adds Starcross to the rotation.", DRG.JobID)]
@@ -1665,8 +1665,8 @@ namespace XIVSlothCombo.Combos
         DRG_AoE_HighJump = 6213,
 
         [ParentCombo(DRG_AoE_HighJump)]
-        [CustomComboInfo("(High) Jump movement option", "Adds (High) Jump to the rotation when not moving.", DRG.JobID)]
-        DRG_AoE_HighJump_Movement = 6214,
+        [CustomComboInfo("(High) Jump Melee option", "Adds (High) Jump to the rotation when in the target ring (1 yalm) & when not moving.", DRG.JobID)]
+        DRG_AoE_HighJump_Melee = 6214,
 
         [ParentCombo(DRG_AoE_HighJump)]
         [CustomComboInfo("Mirage Dive Option", "Adds Mirage Dive to the rotation.", DRG.JobID)]
@@ -2806,6 +2806,10 @@ namespace XIVSlothCombo.Combos
         PCT_ST_AdvancedMode_SwitfcastOption = 20032,
 
         [ParentCombo(PCT_ST_AdvancedMode)]
+        [CustomComboInfo("Swiftcast Motifs Option ", $"Use swiftcast for motifs.", PCT.JobID)]
+        PCT_ST_AdvancedMode_SwiftMotifs = 20035,
+
+        [ParentCombo(PCT_ST_AdvancedMode)]
         [CustomComboInfo("Blizzard in Cyan Option", $"Adds Blizzard in Cyan to the combo.", PCT.JobID)]
         PCT_ST_AdvancedMode_BlizzardInCyan = 20033,
 
@@ -2813,7 +2817,7 @@ namespace XIVSlothCombo.Combos
         [CustomComboInfo("Lucid Dreaming Option", $"Adds Lucid Dreaming to the combo.", PCT.JobID)]
         PCT_ST_AdvancedMode_LucidDreaming = 20034,
 
-        // Last value for ST = 20034 
+        // Last value for ST = 20035
         #endregion
 
         #region AoE
