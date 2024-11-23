@@ -16,18 +16,25 @@ namespace XIVSlothCombo.Combos.PvP
             Flare = 29651,
             Blizzard4 = 29654,
             Freeze = 29655,
-            Foul = 29371;
+            Foul = 29371,
+            Lethargy = 41510,
+            ElementalWeave = 41475,
+            SoulResonance = 29662,
+            Xenoglossy = 29658;
 
         public static class Buffs
         {
             public const ushort
-                AstralFire2 = 3212,
-                AstralFire3 = 3213,
+                AstralFire1 = 3212,
+                AstralFire2 = 3213,
+                AstralFire3 = 3381,
                 UmbralIce2 = 3214,
                 UmbralIce3 = 3215,
                 Burst = 3221,
                 SoulResonance = 3222,
-                Polyglot = 3169;
+                Polyglot = 3169,
+                ElementalStar = 4317,
+                Paradox = 3223;
         }
 
         public static class Debuffs
@@ -39,79 +46,88 @@ namespace XIVSlothCombo.Combos.PvP
                 DeepFreeze = 3219;
         }
 
+        public static class Config
+        {
+            public const string
+                BLMPvP_WreathOfIce = "BLMPvP_WreathOfIce";
+
+        }
+
         internal class BLMPvP_BurstMode : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLMPvP_BurstMode;
 
             protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
             {
+                bool canWeave = CanSpellWeave(actionID);
+
                 if (actionID is Fire or Fire4 or Flare)
                 {
-                    bool canWeave = CanSpellWeave(actionID);
 
-                    if (HasEffect(Buffs.Polyglot))
-                        return Foul;
+                    if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_WreathOfFire))
+                    {
+                        if (IsOffCooldown(ElementalWeave) && TargetHasEffectAny(PvPCommon.Buffs.Guard) && canWeave && (HasEffect(Buffs.AstralFire1) || HasEffect(Buffs.AstralFire2) || HasEffect(Buffs.AstralFire3)))
+                            return OriginalHook(ElementalWeave);
+                    }
 
-                    if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_AetherialManip) &&
-                        GetCooldown(AetherialManipulation).RemainingCharges > 0 &&
-                        !InMeleeRange() && IsOffCooldown(Burst) && canWeave)
-                        return AetherialManipulation;
+                    if (!PvPCommon.IsImmuneToDamage())
+                    {
+                        if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_FlareStar) && HasEffect(Buffs.ElementalStar))
+                            return OriginalHook(SoulResonance);
 
-                    if (InMeleeRange() &&
-                        IsOffCooldown(Burst))
-                        return Burst;
+                        if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_Xenoglossy) && HasCharges(Xenoglossy))
+                            return Xenoglossy;
 
-                    if (!TargetHasEffect(Debuffs.AstralWarmth))
-                        return OriginalHook(Fire);
+                        if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_AetherialManip) &&
+                            GetCooldown(AetherialManipulation).RemainingCharges > 0 &&
+                            !InMeleeRange() && IsOffCooldown(Burst) && canWeave)
+                            return AetherialManipulation;
 
-                    if (FindTargetEffect(Debuffs.AstralWarmth).StackCount < 3 &&
-                        IsOffCooldown(Paradox))
-                        return Paradox;
+                        if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_Burst) && InMeleeRange() &&
+                            IsOffCooldown(Burst))
+                            return Burst;
 
-                    if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_NightWing) &&
-                        IsOffCooldown(NightWing))
-                        return NightWing;
+                        if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_Lethargy) && IsOffCooldown(Lethargy) && canWeave)
+                            return Lethargy;
 
-                    if (FindTargetEffect(Debuffs.AstralWarmth).StackCount == 3 &&
-                        GetCooldown(Superflare).RemainingCharges > 0 &&
-                        !TargetHasEffect(Debuffs.Burns))
-                        return Superflare;
+                        if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_Paradox) && HasEffect(Buffs.Paradox))
+                            return Paradox;
+                    }
 
                 }
 
                 if (actionID is Blizzard or Blizzard4 or Freeze)
                 {
-                    bool canWeave = CanSpellWeave(actionID);
 
-                    if (HasEffect(Buffs.Polyglot))
-                        return Foul;
+                    if (!PvPCommon.IsImmuneToDamage())
+                    {
+                        if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_FrostStar) && HasEffect(Buffs.ElementalStar))
+                            return OriginalHook(SoulResonance);
 
-                    if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_AetherialManip) &&
-                        GetCooldown(AetherialManipulation).RemainingCharges > 0 &&
-                        !InMeleeRange() &&
-                        IsOffCooldown(Burst) &&
-                        canWeave)
-                        return AetherialManipulation;
+                        if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_WreathOfIce) && IsOffCooldown(ElementalWeave) && canWeave && PlayerHealthPercentageHp() <= GetOptionValue(Config.BLMPvP_WreathOfIce))
+                            return OriginalHook(ElementalWeave);
 
-                    if (InMeleeRange() &&
-                        IsOffCooldown(Burst))
-                        return Burst;
+                        if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_Xenoglossy) && HasCharges(Xenoglossy))
+                            return Foul;
 
-                    if (!TargetHasEffect(Debuffs.UmbralFreeze))
-                        return OriginalHook(Blizzard);
+                        if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_AetherialManip) &&
+                            GetCooldown(AetherialManipulation).RemainingCharges > 0 &&
+                            !InMeleeRange() &&
+                            IsOffCooldown(Burst) &&
+                            canWeave)
+                            return AetherialManipulation;
 
-                    if (FindTargetEffect(Debuffs.UmbralFreeze).StackCount < 3 &&
-                        IsOffCooldown(Paradox))
-                        return Paradox;
+                        if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_Burst) && InMeleeRange() &&
+                            IsOffCooldown(Burst))
+                            return Burst;
 
-                    if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_NightWing) &&
-                        IsOffCooldown(NightWing))
-                        return NightWing;
+                        if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_Lethargy) && IsOffCooldown(Lethargy) && canWeave)
+                            return Lethargy;
 
-                    if (FindTargetEffect(Debuffs.UmbralFreeze).StackCount == 3 &&
-                        GetCooldown(Superflare).RemainingCharges > 0 &&
-                        !TargetHasEffect(Debuffs.DeepFreeze))
-                        return Superflare;
+                        if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_Paradox) && HasEffect(Buffs.Paradox))
+                            return Paradox;
+                    }
+
                 }
 
                 return actionID;

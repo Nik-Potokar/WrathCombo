@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using XIVSlothCombo.Core;
 using XIVSlothCombo.CustomComboNS;
+using XIVSlothCombo.CustomComboNS.Functions;
 
 namespace XIVSlothCombo.Combos.PvP
 {
@@ -47,6 +48,12 @@ namespace XIVSlothCombo.Combos.PvP
         internal static readonly List<uint>
             MovmentSkills = [WARPvP.Onslaught, NINPvP.Shukuchi, DNCPvP.EnAvant, MNKPvP.ThunderClap, RDMPvP.CorpsACorps, RDMPvP.Displacement, SGEPvP.Icarus, RPRPvP.HellsIngress, RPRPvP.Regress, BRDPvP.RepellingShot, BLMPvP.AetherialManipulation, DRGPvP.ElusiveJump, GNBPvP.RoughDivide],
             GlobalSkills = [Teleport, Guard, Recuperate, Purify, StandardElixir, Sprint];
+
+
+        public static bool IsImmuneToDamage()
+        {
+            return CustomComboFunctions.TargetHasEffectAny(PvPCommon.Buffs.Guard) || CustomComboFunctions.TargetHasEffectAny(DRKPvP.Buffs.UndeadRedemption) || CustomComboFunctions.TargetHasEffectAny(PLDPvP.Buffs.HallowedGround) || CustomComboFunctions.TargetHasEffectAny(VPRPvP.Buffs.HardenedScales);
+        }
 
         internal class GlobalEmergencyHeals : CustomCombo
         {

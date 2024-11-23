@@ -11,7 +11,9 @@ namespace XIVSlothCombo.Combos.PvP
             Aqloquilum = 29232,
             Biolysis = 29233,
             DeploymentTactics = 29234,
-            Expedient = 29236;
+            Expedient = 29236,
+            ChainStratagem = 29716;
+
 
         internal class Buffs
         {
@@ -33,13 +35,20 @@ namespace XIVSlothCombo.Combos.PvP
             {
                 if (actionID is Broil && InCombat())
                 {
+                    // Uses Chain Stratagem when available
+                    if (IsEnabled(CustomComboPreset.SCHPvP_ChainStratagem) && IsOffCooldown(ChainStratagem))
+                        return ChainStratagem;
+
                     // Uses Expedient when available and target isn't affected with Biolysis
                     if (IsEnabled(CustomComboPreset.SCHPvP_Expedient) && IsOffCooldown(Expedient) && !TargetHasEffect(Debuffs.Biolysis))
                         return Expedient;
 
                     // Uses Biolysis under Recitation, or on cooldown when option active
-                    if ((IsEnabled(CustomComboPreset.SCHPvP_Biolysis) && IsOffCooldown(Biolysis)) || (HasEffect(Buffs.Recitation) && IsOffCooldown(Biolysis)))
+                    if(IsEnabled(CustomComboPreset.SCHPvP_Biolysis))
+                    {
+                        if (IsOffCooldown(Biolysis) || (HasEffect(Buffs.Recitation) && IsOffCooldown(Biolysis)))
                         return Biolysis;
+                    }
 
                     // Uses Deployment Tactics when available
                     if (IsEnabled(CustomComboPreset.SCHPvP_DeploymentTactics) && GetRemainingCharges(DeploymentTactics) > 1)

@@ -15,6 +15,7 @@ namespace XIVSlothCombo.Window
         {
             switch (jobId)
             {
+                case Item.JobID: jobId = 62114; break; //Items
                 case All.JobID: jobId = 62146; break; //Adventurer / General
                 case > All.JobID and <= 42: jobId += 62100; break; //Classes
                 case DOL.JobID: jobId = 82096; break;

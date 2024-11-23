@@ -226,6 +226,37 @@ namespace XIVSlothCombo.CustomComboNS.Functions
         public unsafe static uint ComboAction => ActionManager.Instance()->Combo.Action;
 
         /// <summary>
+        /// Checks the curent status of the action
+        /// </summary>
+        /// <param name="actionID"></param>
+        /// <returns></returns>
+        public static unsafe uint CheckActionStatus(uint actionID) => ActionManager.Instance() is null ? uint.MaxValue : ActionManager.Instance()->GetActionStatus(ActionType.Action, actionID);
+
+        internal unsafe static bool CanUseAction(uint actionID, uint targetID = 0xE000_0000)
+        {
+            return ActionManager.Instance()->GetActionStatus(ActionType.Action, actionID, targetID, false, true) == 0 && CheckActionStatus(actionID) is 0;
+        }
+
+        internal static bool CanDynamicWeave(uint actionID)
+        {
+            bool canWeave = CalculateCanWeave(actionID);
+            return canWeave;
+        }
+
+        private static bool CalculateCanWeave(uint actionID)
+        {
+            uint actionToCheck = (ActionWatching.LastAction == 0 || ActionWatching.LastAction == ActionWatching.LastAbility) ? actionID : ActionWatching.LastAction;
+            return CanWeave(actionToCheck);
+        }
+
+        //Animation Lock
+        public unsafe static float GetAnimationLock(uint actionId)
+        {
+            if (ItemManager._actionManagerInstance->AnimationLock != 0)
+                return ItemManager._actionManagerInstance->AnimationLock;
+
+            return 0.0f; // Default return value if AnimationLock is 0
+        }
         /// Gets the current Limit Break action (PVE only)
         /// </summary>
         public unsafe static uint LimitBreakAction => LimitBreakController.Instance()->GetActionId(Player.Object.Character(), (byte)Math.Max(0, (LimitBreakLevel - 1)));

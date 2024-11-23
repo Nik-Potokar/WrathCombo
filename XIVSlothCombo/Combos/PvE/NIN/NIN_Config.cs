@@ -1,3 +1,4 @@
+using XIVSlothCombo.Combos.PvP;
 using XIVSlothCombo.Window.Functions;
 
 namespace XIVSlothCombo.Combos.PvE;
@@ -148,6 +149,10 @@ internal partial class NIN
                 case CustomComboPreset.NIN_Variant_Cure:
                     UserConfig.DrawSliderInt(1, 100, NIN_VariantCure, "HP% to be at or under", 200);
 
+                    break;
+
+                case CustomComboPreset.NINPvP_ST_SeitonTenchu:
+                    UserConfig.DrawSliderInt(1, 50, NINPvP.Config.NINPVP_SeitonTenchu, "Target's HP% to be at or under", 200);
                     break;
             }
         }

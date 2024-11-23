@@ -1,3 +1,5 @@
+using XIVSlothCombo.CustomComboNS.Functions;
+
 namespace XIVSlothCombo.Combos.PvE;
 
 internal partial class ALL

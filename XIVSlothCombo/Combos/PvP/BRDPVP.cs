@@ -11,11 +11,12 @@ namespace XIVSlothCombo.Combos.PvP
             PowerfulShot = 29391,
             ApexArrow = 29393,
             SilentNocturne = 29395,
-            EmpyrealArrow = 29398,
             RepellingShot = 29399,
             WardensPaean = 29400,
             PitchPerfect = 29392,
-            BlastArrow = 29394;
+            BlastArrow = 29394,
+            HarmonicArrow = 41464,
+            FinalFantasia = 29401;
 
         public static class Buffs
         {
@@ -23,7 +24,16 @@ namespace XIVSlothCombo.Combos.PvP
                 FrontlinersMarch = 3138,
                 FrontlinersForte = 3140,
                 Repertoire = 3137,
-                BlastArrowReady = 3142;
+                BlastArrowReady = 3142,
+                EncoreofLightReady = 4312,
+                FrontlineMarch = 3139;
+        }
+
+        public static class Config
+        {
+            public const string
+                BRDPvP_HarmonicArrowsCharges = "BRDPvP_HarmonicArrowsCharges";
+
         }
 
         internal class BRDPvP_BurstMode : CustomCombo
@@ -37,25 +47,36 @@ namespace XIVSlothCombo.Combos.PvP
                 {
                     var canWeave = CanWeave(actionID, 0.5);
 
-                    if (canWeave)
+                    if (!PvPCommon.IsImmuneToDamage())
                     {
-                        if (GetCooldown(EmpyrealArrow).RemainingCharges == 3)
-                            return OriginalHook(EmpyrealArrow);
+                        if (canWeave)
+                        {
+                            if (IsEnabled(CustomComboPreset.BRDPvP_SilentNocturne) && !GetCooldown(SilentNocturne).IsCooldown)
+                                return OriginalHook(SilentNocturne);
 
-                        if (IsEnabled(CustomComboPreset.BRDPvP_SilentNocturne) && !GetCooldown(SilentNocturne).IsCooldown)
-                            return OriginalHook(SilentNocturne);
+                            if (IsEnabled(CustomComboPreset.BRDPvP_EncoreOfLight) && HasEffect(Buffs.EncoreofLightReady))
+                                return OriginalHook(FinalFantasia);
+                        }
+
+                        if (IsEnabled(CustomComboPreset.BRDPvP_ApexArrow) && !GetCooldown(ApexArrow).IsCooldown)
+                            return OriginalHook(ApexArrow);
+
+                        if (HasEffect(Buffs.FrontlineMarch))
+                        {
+                            if (IsEnabled(CustomComboPreset.BRDPvP_HarmonicArrow) && GetRemainingCharges(HarmonicArrow) >= GetOptionValue(Config.BRDPvP_HarmonicArrowsCharges))
+                                return OriginalHook(HarmonicArrow);
+
+                            if (IsEnabled(CustomComboPreset.BRDPvP_BlastArrow) && HasEffect(Buffs.BlastArrowReady))
+                                return OriginalHook(BlastArrow);
+
+                            if (HasEffect(Buffs.Repertoire))
+                                return OriginalHook(PowerfulShot);
+
+                        }
+
+                        return OriginalHook(PowerfulShot);
                     }
 
-                    if (HasEffect(Buffs.BlastArrowReady))
-                        return OriginalHook(BlastArrow);
-
-                    if (HasEffect(Buffs.Repertoire))
-                        return OriginalHook(PowerfulShot);
-
-                    if (!GetCooldown(ApexArrow).IsCooldown)
-                        return OriginalHook(ApexArrow);
-
-                    return OriginalHook(PowerfulShot);
                 }
 
                 return actionID;
