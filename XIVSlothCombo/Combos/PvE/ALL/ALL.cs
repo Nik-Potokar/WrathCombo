@@ -67,19 +67,6 @@ namespace XIVSlothCombo.Combos.PvE
             AgelessWords = 215,
             WiseToTheWorldMIN = 26521,
             WiseToTheWorldBTN = 26522,
-            LowBlow = 7540,
-            Bloodbath = 7542,
-            HeadGraze = 7551,
-            FootGraze = 7553,
-            LegGraze = 7554,
-            Feint = 7549,
-            Interject = 7538,
-            Peloton = 7557,
-            LegSweep = 7863,
-            Repose = 16560,
-            Sprint = 3,
-            ArmsLength = 7548,
-            Surecast = 7559;
 
             //Duty actions
             SmokeScreen = 7816,
