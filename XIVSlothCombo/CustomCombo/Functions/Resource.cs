@@ -1,4 +1,5 @@
 ﻿using Dalamud.Game.ClientState.JobGauge.Types;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using XIVSlothCombo.Data;
 using XIVSlothCombo.Services;
 
@@ -20,5 +21,15 @@ namespace XIVSlothCombo.CustomComboNS.Functions
         /// <typeparam name="T"> Type of job gauge.</typeparam>
         /// <returns> The job gauge. </returns>
         public static T GetJobGauge<T>() where T : JobGaugeBase => Service.ComboCache.GetJobGauge<T>();
+
+        public unsafe static int LimitBreakValue => LimitBreakController.Instance()->CurrentUnits;
+
+        public unsafe static int LimitBreakLevel => LimitBreakController.Instance()->BarUnits == 0 ? 0 : LimitBreakValue / LimitBreakController.Instance()->BarUnits;
+
+        public unsafe static bool IsLB1Ready => LimitBreakLevel == 1;
+
+        public unsafe static bool IsLB2Ready => LimitBreakLevel == 2;
+
+        public unsafe static bool IsLB3Ready => LimitBreakLevel == 3;
     }
 }

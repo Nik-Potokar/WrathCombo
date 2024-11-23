@@ -1152,6 +1152,10 @@ namespace XIVSlothCombo.Combos
         [ParentCombo(DNC_ST_AdvancedMode)]
         [CustomComboInfo("Panic Heals Option", "Includes Curing Waltz and Second Wind in the rotation when available and your HP is below the set percentages.", DNC.JobID, 13)]
         DNC_ST_Adv_PanicHeals = 4059,
+
+        [ParentCombo(DNC_ST_AdvancedMode)]
+        [CustomComboInfo("Dance Partner Reminder Option", "Includes Closed Position when out of combat and no dance partner is found.", DNC.JobID)]
+        DNC_ST_Adv_Partner = 4089,
         #endregion
 
         #region Advanced Dancer (AoE)
@@ -1229,6 +1233,10 @@ namespace XIVSlothCombo.Combos
         [ParentCombo(DNC_AoE_AdvancedMode)]
         [CustomComboInfo("Panic Heals Option", "Includes Curing Waltz and Second Wind in the AoE rotation when available and your HP is below the set percentages.", DNC.JobID, 12)]
         DNC_AoE_Adv_PanicHeals = 4079,
+
+        [ParentCombo(DNC_AoE_AdvancedMode)]
+        [CustomComboInfo("Dance Partner Reminder Option", "Includes Closed Position when out of combat and no dance partner is found.", DNC.JobID)]
+        DNC_AoE_Adv_Partner = 4095,
         #endregion
 
         #region Variant
@@ -1245,7 +1253,7 @@ namespace XIVSlothCombo.Combos
 
         #endregion
 
-        // Last value = 4088
+        // Last value = 4090
 
         #endregion
 
@@ -1793,6 +1801,30 @@ namespace XIVSlothCombo.Combos
         [ParentCombo(GNB_ST_Advanced)]
         [CustomComboInfo("Ammo Overcap Option", "Adds Burst Strike into the rotation if you have max cartridges & your last combo action was Brutal Shell.", GNB.JobID)]
         GNB_ST_Overcap = 7018,
+
+        #region Mitigation Options
+        [ParentCombo(GNB_ST_Advanced)]
+        [CustomComboInfo("Mitigation Options", "Collection of Mitigation features.", GNB.JobID)]
+        GNB_ST_Mitigation = 7019,
+
+        [ParentCombo(GNB_ST_Mitigation)]
+        [CustomComboInfo("Heart of Corundum Option", "Uses Heart of Corundum based on Health Remaining.\n" +
+              "(Note: makes no attempt to ensure mit is optimally used)", GNB.JobID)]
+        GNB_ST_HOC = 7020,
+
+        [ParentCombo(GNB_ST_Mitigation)]
+        [CustomComboInfo("Great Nebula Option", "Uses Great Nebula based on Health Remaining.", GNB.JobID)]
+        GNB_ST_GreatNebula = 7021,
+
+        [ParentCombo(GNB_ST_Mitigation)]
+        [CustomComboInfo("Superbolide Option", "Uses Superbolide based on Health Remaining.", GNB.JobID)]
+        GNB_ST_Superbolide = 7022,
+
+        [ParentCombo(GNB_ST_Mitigation)]
+        [CustomComboInfo("Aurora Protection Feature", "Locks out Aurora if Aurora's effect is on the target.", GNB.JobID, 0)]
+        GNB_AuroraProtection = 7023,
+        #endregion
+
         #endregion
 
         #region Lightning Shot
@@ -1854,6 +1886,26 @@ namespace XIVSlothCombo.Combos
         [ParentCombo(GNB_AoE_Overcap)]
         [CustomComboInfo("Ammo Overcap Burst Strike Option", "Adds Burst Strike into the AoE rotation if you have max cartridges, your last combo action was Demon Slice, & you do not have Fated Circle unlocked yet.", GNB.JobID)]
         GNB_AoE_BSOvercap = 7211,
+
+        #region Mitigation Options
+        [ParentCombo(GNB_AoE_Advanced)]
+        [CustomComboInfo("Mitigation Options", "Collection of Mitigation features.", GNB.JobID)]
+        GNB_AoE_Mitigation = 7216,
+
+        [ParentCombo(GNB_AoE_Mitigation)]
+        [CustomComboInfo("Heart of Corundum Option", "Uses Heart of Corundum based on Health Remaining.\n" +
+              "(Note: makes no attempt to ensure mit is optimally used)", GNB.JobID)]
+        GNB_AoE_HOC = 7213,
+
+        [ParentCombo(GNB_AoE_Mitigation)]
+        [CustomComboInfo("Great Nebula Option", "Uses Great Nebula based on Health Remaining.", GNB.JobID)]
+        GNB_AoE_GreatNebula = 7214,
+
+        [ParentCombo(GNB_AoE_Mitigation)]
+        [CustomComboInfo("Superbolide Option", "Uses Superbolide based on Health Remaining.", GNB.JobID)]
+        GNB_AoE_Superbolide = 7215,
+        #endregion
+
         #endregion
 
         #region Gnashing Fang
@@ -1973,11 +2025,6 @@ namespace XIVSlothCombo.Combos
         [ParentCombo(GNB_FC_Features)]
         [CustomComboInfo("Reign Option", "Adds Reign/Noble/LionHeart to Fated Circle when appropriate.", GNB.JobID)]
         GNB_FC_Reign = 7604,
-        #endregion
-
-        #region Aurora
-        [CustomComboInfo("Aurora Protection Feature", "Locks out Aurora if Aurora's effect is on the target.", GNB.JobID, 0)]
-        GNB_AuroraProtection = 7700,
         #endregion
 
         #region Variant Skills
@@ -4344,7 +4391,7 @@ namespace XIVSlothCombo.Combos
         [CustomComboInfo("Swiftcast Raise Combo Feature", "Changes Swiftcast to Resurrection while Swiftcast is on cooldown.", SCH.JobID, 10)]
         SCH_Raise = 16032,
 
-        [ReplaceSkill(SCH.WhisperingDawn, SCH.FeyBlessing, SCH.FeyBlessing, SCH.Aetherpact, SCH.Dissipation)]
+        [ReplaceSkill(SCH.WhisperingDawn, SCH.FeyIllumination, SCH.FeyBlessing, SCH.Aetherpact, SCH.Dissipation, SCH.SummonSeraph)]
         [CustomComboInfo("Fairy Feature", "Change all fairy actions into Summon Eos when the Fairy is not summoned.", SCH.JobID, 11)]
         SCH_FairyReminder = 16033,
 

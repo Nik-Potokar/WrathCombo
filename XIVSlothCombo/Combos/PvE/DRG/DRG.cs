@@ -161,7 +161,7 @@ internal partial class DRG
                     return Drakesbane;
             }
 
-            return OriginalHook(TrueThrust);
+            return actionID;
         }
     }
 
@@ -358,7 +358,7 @@ internal partial class DRG
                     return Drakesbane;
             }
 
-            return OriginalHook(TrueThrust);
+            return actionID;
         }
     }
 
@@ -486,7 +486,7 @@ internal partial class DRG
 
             return !HasEffect(Buffs.PowerSurge) && !LevelChecked(SonicThrust)
                 ? OriginalHook(TrueThrust)
-                : OriginalHook(DoomSpike);
+                : actionID;
         }
     }
 
@@ -655,7 +655,7 @@ internal partial class DRG
             return IsEnabled(CustomComboPreset.DRG_AoE_Disembowel) &&
                    !HasEffect(Buffs.PowerSurge) && !LevelChecked(SonicThrust)
                 ? OriginalHook(TrueThrust)
-                : OriginalHook(DoomSpike);
+                : actionID;
         }
     }
 

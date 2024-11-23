@@ -18,6 +18,7 @@ public static class ConflictingPluginsCheck
         "xivcomboexpandedest",
         "xivcombovx",
         "xivslothcombo",
+        "rotationsolver",
     };
 
     /// <summary>

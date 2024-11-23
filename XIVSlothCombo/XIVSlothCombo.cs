@@ -134,6 +134,10 @@ namespace XIVSlothCombo
 
                 Svc.Chat.Print("Auto-Rotation set to " + (Service.Configuration.RotationConfig.Enabled ? "ON" : "OFF"));
             };
+            DtrBarEntry.Tooltip = new SeString(
+            new TextPayload("Click to toggle Auto-Rotation Enabled.\n"),
+            new TextPayload("Disable this icon in /xlsettings -> Server Info Bar"));
+
             Svc.ClientState.Login += PrintLoginMessage;
             if (Svc.ClientState.IsLoggedIn) ResetFeatures();
 
@@ -441,7 +445,8 @@ namespace XIVSlothCombo
                             file.WriteLine($"Installation Repo: {repoURL}");                                             // Installation Repo
                             file.WriteLine("");
                             file.WriteLine($"Conflicting Plugins: {conflictingPluginsCount}");                           // Conflicting Plugins
-                            if (conflictingPlugins != null) {
+                            if (conflictingPlugins != null)
+                            {
                                 foreach (var plugin in conflictingPlugins)
                                     file.WriteLine($"- {plugin}");                                                       // Listing Conflicting Plugin
                                 file.WriteLine("");
@@ -454,7 +459,7 @@ namespace XIVSlothCombo
                             file.WriteLine($"Current Job Level: {Svc.ClientState.LocalPlayer.Level}");                   // Job Level
                             file.WriteLine("");
                             file.WriteLine($"Current Zone: {currentZone}");                                              // Current zone location
-                            file.WriteLine($"Current Party Size: {Svc.Party.Length}");                                   // Current party size
+                            file.WriteLine($"Current Party Size: {CustomComboFunctions.GetPartyMembers().Count}");                                   // Current party size
                             file.WriteLine("");
                             file.WriteLine($"START ENABLED FEATURES");
 
@@ -622,6 +627,24 @@ namespace XIVSlothCombo
                         Service.Configuration.Save();
 
                         Svc.Chat.Print("Auto-Rotation set to " + (Service.Configuration.RotationConfig.Enabled ? "ON" : "OFF"));
+
+                        break;
+                    }
+                case "auto on":
+                    {
+                        Service.Configuration.RotationConfig.Enabled = true;
+                        Service.Configuration.Save();
+
+                        Svc.Chat.Print("Auto-Rotation set to ON");
+
+                        break;
+                    }
+                case "auto off":
+                    {
+                        Service.Configuration.RotationConfig.Enabled = false;
+                        Service.Configuration.Save();
+
+                        Svc.Chat.Print("Auto-Rotation set to OFF");
 
                         break;
                     }

@@ -32,6 +32,7 @@ namespace XIVSlothCombo.Data
 
         internal static readonly Dictionary<uint, long> ChargeTimestamps = [];
         internal static readonly Dictionary<uint, long> ActionTimestamps = [];
+        internal static readonly Dictionary<uint, long> LastSuccessfulUseTime = [];
 
         internal readonly static List<uint> CombatActions = [];
 
@@ -56,6 +57,7 @@ namespace XIVSlothCombo.Data
                 }
 
                 LastAction = header.ActionId;
+                LastSuccessfulUseTime[LastAction] = Environment.TickCount64;
 
                 if (ActionSheet.TryGetValue(header.ActionId, out var sheet))
                 { 
@@ -160,6 +162,14 @@ namespace XIVSlothCombo.Data
         {
             if (ActionTimestamps.ContainsKey(actionId))
                 return Environment.TickCount64 - ActionTimestamps[actionId];
+
+            return -1f;
+        }
+
+        public static float TimeSinceLastSuccessfulCast(uint actionId)
+        {
+            if (LastSuccessfulUseTime.ContainsKey(actionId))
+                return Environment.TickCount64 - LastSuccessfulUseTime[actionId];
 
             return -1f;
         }

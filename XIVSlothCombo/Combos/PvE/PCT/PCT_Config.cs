@@ -25,7 +25,8 @@ internal partial class PCT
         public static UserBool
             CombinedMotifsMog = new("CombinedMotifsMog"),
             CombinedMotifsMadeen = new("CombinedMotifsMadeen"),
-            CombinedMotifsWeapon = new("CombinedMotifsWeapon");
+            CombinedMotifsWeapon = new("CombinedMotifsWeapon"),
+            CombinedMotifsLandscape = new ("CombinedMotifsLandscape");
 
         internal static void Draw(CustomComboPreset preset)
         {
@@ -54,6 +55,8 @@ internal partial class PCT
                     UserConfig.DrawAdditionalBoolChoice(CombinedMotifsWeapon, $"{HammerStamp.ActionName()} Feature",
                         $"Add {HammerStamp.ActionName()} when under the effect of {Buffs.HammerTime.StatusName()}.");
 
+                    UserConfig.DrawAdditionalBoolChoice(CombinedMotifsLandscape, $"{StarPrism.ActionName()} Feature",
+                        $"Add {StarPrism.ActionName()} when under the effect of {Buffs.Starstruck.StatusName()}.");
                     break;
 
                 case CustomComboPreset.PCT_ST_AdvancedMode_LucidDreaming:

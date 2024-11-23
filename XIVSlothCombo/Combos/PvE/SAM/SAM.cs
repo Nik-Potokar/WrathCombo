@@ -30,7 +30,7 @@ internal partial class SAM
                 if (lastComboMove == OriginalHook(Hakaze) && LevelChecked(Yukikaze))
                     return OriginalHook(Yukikaze);
 
-            return OriginalHook(Hakaze);
+            return actionID;
         }
     }
 
@@ -60,7 +60,7 @@ internal partial class SAM
                     return OriginalHook(Kasha);
             }
 
-            return OriginalHook(Hakaze);
+            return actionID;
         }
     }
 
@@ -90,7 +90,7 @@ internal partial class SAM
                     return OriginalHook(Gekko);
             }
 
-            return OriginalHook(Hakaze);
+            return actionID;
         }
     }
 
@@ -267,7 +267,7 @@ internal partial class SAM
                     return Kasha;
             }
 
-            return OriginalHook(Hakaze);
+            return actionID;
         }
     }
 
@@ -481,7 +481,7 @@ internal partial class SAM
                     return Kasha;
             }
 
-            return OriginalHook(Hakaze);
+            return actionID;
         }
     }
 
@@ -506,7 +506,7 @@ internal partial class SAM
                 if (lastComboMove == OriginalHook(Fuko))
                     return Oka;
 
-            return OriginalHook(Fuko);
+            return actionID;
         }
     }
 
@@ -531,7 +531,7 @@ internal partial class SAM
                 if (lastComboMove == OriginalHook(Fuko))
                     return Mangetsu;
 
-            return OriginalHook(Fuko);
+            return actionID;
         }
     }
 
@@ -637,7 +637,7 @@ internal partial class SAM
                         return Oka;
                 }
 
-            return OriginalHook(Fuko);
+            return actionID;
         }
     }
 
@@ -759,7 +759,7 @@ internal partial class SAM
                         return Oka;
                 }
 
-            return OriginalHook(Fuko);
+            return actionID;
         }
     }
 
@@ -787,7 +787,7 @@ internal partial class SAM
                     return Yukikaze;
             }
 
-            return MeikyoShisui;
+            return actionID;
         }
     }
 

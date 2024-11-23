@@ -64,7 +64,7 @@ namespace XIVSlothCombo.Combos.PvE
         internal static readonly List<uint>
             BroilList = [Ruin, Broil, Broil2, Broil3, Broil4],
             AetherflowList = [EnergyDrain, Lustrate, SacredSoil, Indomitability, Excogitation],
-            FairyList = [WhisperingDawn, FeyBlessing, FeyIllumination, Dissipation, Aetherpact];
+            FairyList = [WhisperingDawn, FeyBlessing, FeyIllumination, Dissipation, Aetherpact, SummonSeraph];
 
         internal static class Buffs
         {

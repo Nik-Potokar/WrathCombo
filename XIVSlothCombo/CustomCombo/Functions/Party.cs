@@ -13,9 +13,7 @@ namespace XIVSlothCombo.CustomComboNS.Functions
         /// <param name="partySize"> The minimum amount of party members required. </param>
         public static bool IsInParty(int? partySize = null)
         {
-            if (Svc.Party.PartyId > 0) return partySize == null || Svc.Party.Length >= partySize;
-
-            else return false;
+            return GetPartyMembers().Count > 1;
         }
 
         public static bool IsInRaid() => (Svc.Party.Length > 4);

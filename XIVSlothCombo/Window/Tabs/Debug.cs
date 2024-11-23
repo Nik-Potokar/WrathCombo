@@ -24,6 +24,7 @@ using Action = Lumina.Excel.Sheets.Action;
 using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;
 using Dalamud.Utility;
 using ECommons.ExcelServices;
+using XIVSlothCombo.Extensions;
 
 namespace XIVSlothCombo.Window.Tabs
 {
@@ -192,6 +193,9 @@ namespace XIVSlothCombo.Window.Tabs
                         if (ActionWatching.ActionTimestamps.ContainsKey(debugSpell.Value.RowId))
                             CustomStyleText($"Time Since Last Use:", $"{(Environment.TickCount64 - ActionWatching.ActionTimestamps[debugSpell.Value.RowId]) / 1000f:F2}");
 
+                        if (ActionWatching.LastSuccessfulUseTime.ContainsKey(debugSpell.Value.RowId))
+                            CustomStyleText($"Last Successful Cast:", $"{ActionWatching.TimeSinceLastSuccessfulCast(debugSpell.Value.RowId) / 1000f:F2}");
+
                         if (Svc.Targets.Target != null)
                         {
                             var inRange = ActionManager.GetActionInRangeOrLoS(debugSpell.Value.RowId, (GameObject*)LocalPlayer.Address, (GameObject*)Svc.Targets.Target.Address);
@@ -216,6 +220,10 @@ namespace XIVSlothCombo.Window.Tabs
                 CustomStyleText("In FATE:", InFATE());
                 CustomStyleText("Time in Combat:", CombatEngageDuration().ToString("mm\\:ss"));
                 CustomStyleText("Party Combat Time:", PartyEngageDuration().ToString("mm\\:ss"));
+                CustomStyleText("Limit Break:", LimitBreakValue);
+                CustomStyleText("LBs Ready:", $"1.{IsLB1Ready} 2.{IsLB2Ready} 3.{IsLB3Ready}");
+                CustomStyleText("LB Level:", LimitBreakLevel);
+                CustomStyleText("LB Action:", LimitBreakAction.ActionName());
                 ImGui.Spacing();
 
                 ImGui.Spacing();
@@ -345,16 +353,21 @@ namespace XIVSlothCombo.Window.Tabs
                 ImGui.Text("Party Info");
                 ImGui.Separator();
                 CustomStyleText("Party ID:", Svc.Party.PartyId);
-                CustomStyleText("Party Size:", Svc.Party.Length);
+                CustomStyleText("Party Size:", GetPartyMembers().Count);
                 if (ImGui.CollapsingHeader("Party Members"))
                 {
+                    ImGui.Indent();
                     for (int i = 1; i <= 8; i++)
                     {
                         if (GetPartySlot(i) is not IBattleChara member || member is null) continue;
-                        ImGui.TextUnformatted($"Slot {i} ->");
-                        ImGui.SameLine(0, 4f);
-                        CustomStyleText($"{GetPartySlot(i).Name}", $"({member.ClassJob.Value.Abbreviation})");
+                        if (ImGui.CollapsingHeader(member.Name.ToString()))
+                        {
+                            CustomStyleText("Slot:", i);
+                            CustomStyleText("Job:", member.ClassJob.Value.Abbreviation);
+                            CustomStyleText("Dead Timer:", TimeSpentDead(member.GameObjectId));
+                        }
                     }
+                    ImGui.Unindent();
                 }
                 ImGui.Spacing();
 

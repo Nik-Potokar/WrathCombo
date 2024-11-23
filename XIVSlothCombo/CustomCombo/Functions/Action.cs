@@ -1,5 +1,9 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
+using ECommons.GameFunctions;
+using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using System;
 using System.Linq;
 using XIVSlothCombo.Data;
 using XIVSlothCombo.Services;
@@ -253,5 +257,8 @@ namespace XIVSlothCombo.CustomComboNS.Functions
 
             return 0.0f; // Default return value if AnimationLock is 0
         }
+        /// Gets the current Limit Break action (PVE only)
+        /// </summary>
+        public unsafe static uint LimitBreakAction => LimitBreakController.Instance()->GetActionId(Player.Object.Character(), (byte)Math.Max(0, (LimitBreakLevel - 1)));
     }
 }

@@ -296,7 +296,7 @@ internal partial class VPR
             //LowLevels
             return LevelChecked(ReavingFangs) && HasEffect(Buffs.HonedReavers)
                 ? OriginalHook(ReavingFangs)
-                : OriginalHook(SteelFangs);
+                : actionID;
         }
     }
 
@@ -545,7 +545,7 @@ internal partial class VPR
             //LowLevels
             return LevelChecked(ReavingFangs) && HasEffect(Buffs.HonedReavers)
                 ? OriginalHook(ReavingFangs)
-                : OriginalHook(SteelFangs);
+                : actionID;
         }
     }
 
@@ -726,7 +726,7 @@ internal partial class VPR
             //for lower lvls
             return LevelChecked(ReavingMaw) && HasEffect(Buffs.HonedReavers)
                 ? OriginalHook(ReavingMaw)
-                : OriginalHook(SteelMaw);
+                : actionID;
         }
     }
 
@@ -936,7 +936,7 @@ internal partial class VPR
             //for lower lvls
             return LevelChecked(ReavingMaw) && HasEffect(Buffs.HonedReavers)
                 ? OriginalHook(ReavingMaw)
-                : OriginalHook(SteelMaw);
+                : actionID;
         }
     }
 

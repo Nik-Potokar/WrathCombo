@@ -1117,6 +1117,9 @@ namespace XIVSlothCombo.Combos.PvE
 
                 if (actionID == LandscapeMotif)
                 {
+                    if (Config.CombinedMotifsLandscape && HasEffect(Buffs.Starstruck))
+                        return OriginalHook(StarPrism);
+
                     if (gauge.LandscapeMotifDrawn)
                         return OriginalHook(ScenicMuse);
                 }
