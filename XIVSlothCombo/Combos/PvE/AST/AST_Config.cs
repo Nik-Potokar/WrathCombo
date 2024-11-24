@@ -4,6 +4,7 @@ using static XIVSlothCombo.CustomComboNS.Functions.CustomComboFunctions;
 using static XIVSlothCombo.Extensions.UIntExtensions;
 using static XIVSlothCombo.Window.Functions.UserConfig;
 using static XIVSlothCombo.Window.Functions.SliderIncrements;
+using XIVSlothCombo.Window.Functions;
 
 namespace XIVSlothCombo.Combos.PvE
 {
@@ -27,7 +28,10 @@ namespace XIVSlothCombo.Combos.PvE
                 AST_AOE_LightSpeedOption = new("AST_AOE_LightSpeedOption"),
                 AST_DPS_CombustOption = new("AST_DPS_CombustOption"),
                 AST_QuickTarget_Override = new("AST_QuickTarget_Override"),
-                AST_ST_DPS_Play_SpeedSetting = new("AST_ST_DPS_Play_SpeedSetting");
+                AST_ST_DPS_Play_SpeedSetting = new("AST_ST_DPS_Play_SpeedSetting"),
+                //PVP
+                ASTPvP_Burst_PlayCardOption = new("ASTPvP_Burst_PlayCardOption");
+
             public static UserBool
                 AST_QuickTarget_SkipDamageDown = new("AST_QuickTarget_SkipDamageDown"),
                 AST_QuickTarget_SkipRezWeakness = new("AST_QuickTarget_SkipRezWeakness"),
@@ -190,6 +194,16 @@ namespace XIVSlothCombo.Combos.PvE
 
                     case CustomComboPreset.AST_DPS_AutoDraw:
                         DrawAdditionalBoolChoice(AST_ST_DPS_OverwriteCards, "Overwrite Non-DPS Cards", "Will draw even if you have healing cards remaining.");
+                        break;
+
+                    //PVP
+                    case CustomComboPreset.ASTPvP_Burst_PlayCard:
+                        UserConfig.DrawHorizontalRadioButton(ASTPvP_Burst_PlayCardOption, "Lord and Lady card play",
+                            "Uses Lord and Lady of Crowns when available.", 1);
+                        UserConfig.DrawHorizontalRadioButton(ASTPvP_Burst_PlayCardOption, "Lord of Crowns card play",
+                            "Only uses Lord of Crowns when available.", 2);
+                        UserConfig.DrawHorizontalRadioButton(ASTPvP_Burst_PlayCardOption, "Lady of Crowns card play",
+                            "Only uses Lady of Crowns when available.", 3);
                         break;
                 }
             }
