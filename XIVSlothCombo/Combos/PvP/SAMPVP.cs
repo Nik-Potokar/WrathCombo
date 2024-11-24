@@ -32,7 +32,8 @@ namespace XIVSlothCombo.Combos.PvP
             public const ushort
                 Kaiten = 3201,
                 Midare = 3203,
-                TendoSetsugekkaReady = 3203;
+                TendoSetsugekkaReady = 3203,
+                ZanshinReady = 1318;
         }
 
         public static class Debuffs
@@ -67,6 +68,10 @@ namespace XIVSlothCombo.Combos.PvP
 
                     if (!TargetHasEffectAny(PvPCommon.Buffs.Guard))
                     {
+
+                        if (IsEnabled(CustomComboPreset.SAMPvP_BurstMode_Zanshin) && CanWeave(actionID) && HasEffect(Buffs.ZanshinReady))
+                            return OriginalHook(Chiten);
+
                         if (IsOffCooldown(MeikyoShisui) || HasEffect(Buffs.TendoSetsugekkaReady))
                             return OriginalHook(MeikyoShisui);
 

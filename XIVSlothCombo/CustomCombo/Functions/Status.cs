@@ -217,23 +217,24 @@ namespace XIVSlothCombo.CustomComboNS.Functions
 
 
         public static Status? FindEffectOnObject(ushort effectID, IGameObject? obj) =>
-                      Service.ComboCache.GetStatus(effectID, obj, null);
+            Service.ComboCache.GetStatus(effectID, obj, null);
+
         public static int NearbyObjectHasEffect(ushort effectId)
         {
             var localPlayerId = LocalPlayer?.GameObjectId;
-            if (localPlayerId == null)
+            if (localPlayerId is null)
                 return 0;
 
-            IPlayerCharacter[] playersWithDebuff = Svc.Objects
+            return Svc.Objects
                 .OfType<IPlayerCharacter>()
-                .Where(x =>
+                .Count(x =>
                 {
                     var status = FindEffectOnObject(effectId, x);
-                    return status != null && status.RemainingTime > 0.5f && (status.SourceId == localPlayerId || status.SourceId == 0);
-                })
-                .ToArray();
-
-            return playersWithDebuff.Length;
+                    return status is { RemainingTime: >= 0.5f } &&
+                           (status.SourceId == localPlayerId || status.SourceId == 0);
+                });
         }
+        
+
     }
 }

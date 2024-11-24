@@ -1,4 +1,6 @@
-﻿using XIVSlothCombo.CustomComboNS;
+﻿using XIVSlothCombo.Core;
+using XIVSlothCombo.CustomComboNS;
+using static XIVSlothCombo.Combos.PvE.AST;
 
 namespace XIVSlothCombo.Combos.PvP
 {
@@ -17,13 +19,15 @@ namespace XIVSlothCombo.Combos.PvP
             Draw = 29249,
             Macrocosmos = 29253,
             Microcosmos = 29254,
-            MinorArcana = 41503;
+            MinorArcana = 41503,
+            Epicycle = 41506;
 
         internal class Buffs
         {
             internal const ushort
                     LadyOfCrowns = 4328,
-                    LordOfCrowns = 4329;
+                    LordOfCrowns = 4329,
+                    RetrogradeReady = 4331;
 
         }
 
@@ -35,15 +39,26 @@ namespace XIVSlothCombo.Combos.PvP
             {
                 if (actionID is Malefic)
                 {
+                    if (IsEnabled(CustomComboPreset.ASTPvP_Burst_DrawCard) && IsOffCooldown(MinorArcana) && (!HasEffect(Buffs.LadyOfCrowns) && !HasEffect(Buffs.LordOfCrowns)))
+                        return MinorArcana;
 
                     if (!PvPCommon.IsImmuneToDamage())
                     {
-                        if (IsEnabled(CustomComboPreset.ASTPvP_Burst_MinorArcana))
-                        {
+                        var cardPlayOption = PluginConfiguration.GetCustomIntValue(Config.ASTPvP_Burst_PlayCardOption);
 
-                            if (IsOffCooldown(MinorArcana) || HasEffect(Buffs.LadyOfCrowns) && IsOffCooldown(MinorArcana) || HasEffect(Buffs.LordOfCrowns) && CanWeave(actionID))
+                        if (IsEnabled(CustomComboPreset.ASTPvP_Burst_PlayCard) && CanWeave(actionID))
+                        {
+                            bool hasLadyOfCrowns = HasEffect(Buffs.LadyOfCrowns);
+                            bool hasLordOfCrowns = HasEffect(Buffs.LordOfCrowns);
+
+                            if ((cardPlayOption == 1 && (hasLadyOfCrowns || hasLordOfCrowns)) ||
+                                (cardPlayOption == 2 && hasLordOfCrowns) ||
+                                (cardPlayOption == 3 && hasLadyOfCrowns))
+                            {
                                 return OriginalHook(MinorArcana);
+                            }
                         }
+
 
                         if (IsEnabled(CustomComboPreset.ASTPvP_Burst_Macrocosmos) && lastComboMove == DoubleGravity && IsOffCooldown(Macrocosmos))
                             return Macrocosmos;
@@ -66,6 +81,30 @@ namespace XIVSlothCombo.Combos.PvP
                 }
 
                 return actionID;
+            }
+
+            internal class ASTPvP_Epicycle : CustomCombo
+            {
+                protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.ASTPvP_Epicycle;
+
+                protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+                {
+                    if (actionID is Epicycle)
+                    {
+                        if (IsOffCooldown(MinorArcana))
+                            return MinorArcana;
+
+                        if (HasEffect(Buffs.RetrogradeReady))
+                        {
+                            if (HasEffect(Buffs.LordOfCrowns))
+                                return OriginalHook(MinorArcana);
+                            if (IsOffCooldown(Macrocosmos))
+                                return Macrocosmos;
+                        }
+                    }
+
+                    return actionID;
+                }
             }
 
             internal class ASTPvP_Heal : CustomCombo
