@@ -34,6 +34,7 @@ namespace WrathCombo.Window
             .Select(preset => (Preset: preset, Info: preset.GetAttribute<CustomComboInfoAttribute>()))
             .Where(tpl => tpl.Info != null && PresetStorage.GetParent(tpl.Preset) == null)
             .OrderByDescending(tpl => tpl.Info.JobID == 0)
+            .ThenByDescending(tpl => tpl.Info.JobID == Item.JobID)
             .ThenByDescending(tpl => tpl.Info.JobID == DOL.JobID)
             .ThenByDescending(tpl => tpl.Info.JobID == DOH.JobID)
             .ThenByDescending(tpl => tpl.Info.Role == 1)

@@ -34,7 +34,8 @@ namespace WrathCombo.Combos.PvP
                 SoulResonance = 3222,
                 Polyglot = 3169,
                 ElementalStar = 4317,
-                Paradox = 3223;
+                Paradox = 3223,
+                WreathOfFire = 4315;
         }
 
         public static class Debuffs
@@ -70,7 +71,7 @@ namespace WrathCombo.Combos.PvP
                             return OriginalHook(ElementalWeave);
                     }
 
-                    if (!PvPCommon.IsImmuneToDamage())
+                    if (!PvPCommon.IsImmuneToDamage() || HasEffect(Buffs.WreathOfFire))
                     {
                         if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_FlareStar) && HasEffect(Buffs.ElementalStar))
                             return OriginalHook(SoulResonance);
@@ -108,7 +109,7 @@ namespace WrathCombo.Combos.PvP
                             return OriginalHook(ElementalWeave);
 
                         if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_Xenoglossy) && HasCharges(Xenoglossy))
-                            return Foul;
+                            return Xenoglossy;
 
                         if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_AetherialManip) &&
                             GetCooldown(AetherialManipulation).RemainingCharges > 0 &&

@@ -1,6 +1,9 @@
-﻿using Dalamud.Game.ClientState.Objects.Types;
+﻿using Dalamud.Game.ClientState.Objects.SubKinds;
+using Dalamud.Game.ClientState.Objects.Types;
+using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using System.Linq;
 using WrathCombo.Data;
 using WrathCombo.Services;
 using Status = Dalamud.Game.ClientState.Statuses.Status;
@@ -209,6 +212,25 @@ namespace WrathCombo.CustomComboNS.Functions
             }
 
             return true;
+        }
+
+        public static Status? FindEffectOnObject(ushort effectID, IGameObject? obj) =>
+           Service.ComboCache.GetStatus(effectID, obj, null);
+
+        public static int NearbyObjectHasEffect(ushort effectId)
+        {
+            var localPlayerId = LocalPlayer?.GameObjectId;
+            if (localPlayerId is null)
+                return 0;
+
+            return Svc.Objects
+                .OfType<IPlayerCharacter>()
+                .Count(x =>
+                {
+                    var status = FindEffectOnObject(effectId, x);
+                    return status is { RemainingTime: >= 0.5f } &&
+                           (status.SourceId == localPlayerId || status.SourceId == 0);
+                });
         }
     }
 }

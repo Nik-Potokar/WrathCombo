@@ -46,7 +46,8 @@ namespace WrathCombo.Combos.PvP
         {
             public const string
                 SAMPvP_SotenCharges = "SamSotenCharges",
-                SAMPvP_SotenHP = "SamSotenHP";
+                SAMPvP_SotenHP = "SamSotenHP",
+                SAMPVP_Zantetsuken = "SAMPVP_Zantetsuken";
 
         }
 
@@ -57,12 +58,17 @@ namespace WrathCombo.Combos.PvP
             protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
             {
                 var sotenCharges = PluginConfiguration.GetCustomIntValue(Config.SAMPvP_SotenCharges);
+                var kuzushiValue = PluginConfiguration.GetCustomIntValue(Config.SAMPVP_Zantetsuken);
+
 
                 if ((IsNotEnabled(CustomComboPreset.SAMPvP_BurstMode_MainCombo) && actionID == MeikyoShisui) ||
                     (IsEnabled(CustomComboPreset.SAMPvP_BurstMode_MainCombo) && actionID is Yukikaze or Gekko or Kasha or Hyosetsu or Oka or Mangetsu))
                 {
                     if (!TargetHasEffectAny(PvPCommon.Buffs.Guard))
                     {
+                        if (IsEnabled(CustomComboPreset.SAMPvP_BurstMode_Zantetsuken) && NearbyObjectHasEffect(Debuffs.Kuzushi) >= kuzushiValue && CanUseAction(Zantetsuken))
+                            return Zantetsuken;
+
                         if (IsEnabled(CustomComboPreset.SAMPvP_BurstMode_Zanshin) && CanWeave(actionID) && HasEffect(Buffs.ZanshinReady))
                             return OriginalHook(Chiten);
 

@@ -84,6 +84,11 @@ internal partial class SAM
 
                     break;
 
+                case CustomComboPreset.SAMPvP_BurstMode_Zantetsuken:
+                    UserConfig.DrawSliderInt(1, 10, SAMPvP.Config.SAMPVP_Zantetsuken,
+                        "Use when set amount of enemies have Kuzushi status.");
+                    break;
+
                 case CustomComboPreset.SAMPvP_KashaFeatures_GapCloser:
                     UserConfig.DrawSliderInt(0, 100, SAMPvP.Config.SAMPvP_SotenHP,
                         "Use Soten on enemies below selected HP.");
