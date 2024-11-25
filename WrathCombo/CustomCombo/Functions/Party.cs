@@ -49,10 +49,7 @@ namespace WrathCombo.CustomComboNS.Functions
                     8 => GetTarget(TargetType.P8),
                     _ => GetTarget(TargetType.Self),
                 };
-                ulong i = PartyTargetingService.GetObjectID(o);
-                return Svc.Objects.Where(x => x.GameObjectId == i).Any()
-                    ? Svc.Objects.Where(x => x.GameObjectId == i).First()
-                    : null;
+                return Svc.Objects.FirstOrDefault(x => x.GameObjectId == o->GetGameObjectId());
             }
 
             catch

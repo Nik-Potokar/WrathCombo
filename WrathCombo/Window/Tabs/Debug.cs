@@ -207,6 +207,8 @@ namespace WrathCombo.Window.Tabs
                         }
                         var canUseOnSelf = ActionManager.CanUseActionOnTarget(debugSpell.Value.RowId, Player.GameObject);
                         CustomStyleText($"Can Use on Self:", canUseOnSelf);
+
+                        Util.ShowObject(debugSpell.Value);
                     }
                 }
 
