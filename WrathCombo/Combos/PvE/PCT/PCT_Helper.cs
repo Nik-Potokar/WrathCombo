@@ -121,18 +121,21 @@ internal partial class PCT
 
             if (currentState == OpenerState.InOpener)
             {
-                if (CustomComboFunctions.WasLastAction(StrikingMuse) && OpenerStep == 1) OpenerStep++;
-                else if (OpenerStep == 1) actionID = StrikingMuse;
+                if (CustomComboFunctions.WasLastAction(RainbowDrip) && OpenerStep == 1) OpenerStep++;
+                else if (OpenerStep == 1) actionID = RainbowDrip;
+
+                if (CustomComboFunctions.WasLastAction(StrikingMuse) && OpenerStep == 2) OpenerStep++;
+                else if (OpenerStep == 2) actionID = StrikingMuse;
 
                 // If the early opener is not enabled, include HolyInWhite
                 if (!isEarlyOpenerEnabled)
                 {
-                    if (CustomComboFunctions.WasLastAction(HolyInWhite) && OpenerStep == 2) OpenerStep++;
-                    else if (OpenerStep == 2) actionID = HolyInWhite;
+                    if (CustomComboFunctions.WasLastAction(HolyInWhite) && OpenerStep == 3) OpenerStep++;
+                    else if (OpenerStep == 3) actionID = HolyInWhite;
                 }
 
                 // Adjust step numbers based on if HolyInWhite was skipped
-                int adjustedStep = isEarlyOpenerEnabled ? 2 : 3;
+                int adjustedStep = isEarlyOpenerEnabled ? 3 : 4;
 
                 if (CustomComboFunctions.WasLastAction(PomMuse) && OpenerStep == adjustedStep) OpenerStep++;
                 else if (OpenerStep == adjustedStep) actionID = PomMuse;
@@ -376,16 +379,20 @@ internal partial class PCT
                 bool isEarlyOpenerEnabled =
                     CustomComboFunctions.IsEnabled(CustomComboPreset.PCT_ST_Advanced_Openers_EarlyOpener);
 
-                if (CustomComboFunctions.WasLastAction(StrikingMuse) && OpenerStep == 1) OpenerStep++;
-                else if (OpenerStep == 1) actionID = StrikingMuse;
+                if (CustomComboFunctions.WasLastAction(RainbowDrip) && OpenerStep == 1) OpenerStep++;
+                else if (OpenerStep == 1) actionID = RainbowDrip;
 
+                if (CustomComboFunctions.WasLastAction(StrikingMuse) && OpenerStep == 2) OpenerStep++;
+                else if (OpenerStep == 2) actionID = StrikingMuse;
+
+                // If the early opener is not enabled, include HolyInWhite
                 if (!isEarlyOpenerEnabled)
                 {
-                    if (CustomComboFunctions.WasLastAction(HolyInWhite) && OpenerStep == 2) OpenerStep++;
-                    else if (OpenerStep == 2) actionID = HolyInWhite;
+                    if (CustomComboFunctions.WasLastAction(HolyInWhite) && OpenerStep == 3) OpenerStep++;
+                    else if (OpenerStep == 3) actionID = HolyInWhite;
                 }
 
-                int adjustedStep = isEarlyOpenerEnabled ? 2 : 3;
+                int adjustedStep = isEarlyOpenerEnabled ? 3 : 4;
 
                 if (CustomComboFunctions.WasLastAction(PomMuse) && OpenerStep == adjustedStep) OpenerStep++;
                 else if (OpenerStep == adjustedStep) actionID = PomMuse;
