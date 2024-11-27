@@ -506,7 +506,7 @@ namespace WrathCombo.Combos
         #region AoE - Advanced
 
         [AutoAction(true, false)]
-        [ReplaceSkill(BLM.Fire)]
+        [ReplaceSkill(BLM.Blizzard2, BLM.HighBlizzard2)]
         [ConflictingCombos(BLM_AoE_SimpleMode)]
         [CustomComboInfo("Advanced Mode - AoE", "Replaces Blizzard II with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.", BLM.JobID)]
         BLM_AoE_AdvancedMode = 2200,
