@@ -635,6 +635,25 @@ namespace WrathCombo
 
                         break;
                     }
+                case "combo":
+                    {
+                        if (argumentsParts.Length < 2) break;
+
+                        switch (argumentsParts[1])
+                        {
+                            case "on":
+                                if (!Service.IconReplacer.getIconHook.IsEnabled) Service.IconReplacer.getIconHook.Enable();
+                                break;
+                            case "off":
+                                if (Service.IconReplacer.getIconHook.IsEnabled) Service.IconReplacer.getIconHook.Disable();
+                                break;
+                            case "toggle":
+                                if (Service.IconReplacer.getIconHook.IsEnabled) Service.IconReplacer.getIconHook.Disable(); else Service.IconReplacer.getIconHook.Enable();
+                                break;
+                        }
+
+                        break;
+                    }
                 default:
                     ConfigWindow.IsOpen = !ConfigWindow.IsOpen;
                     PvEFeatures.HasToOpenJob = true;

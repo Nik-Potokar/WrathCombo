@@ -85,6 +85,9 @@ namespace WrathCombo.Data
         {
             try
             {
+                if (!CustomComboFunctions.InCombat())
+                    CombatActions.Clear();
+
                 if (actionType == 1 && CustomComboFunctions.GetMaxCharges(actionId) > 0)
                     ChargeTimestamps[actionId] = Environment.TickCount64;
 

@@ -404,7 +404,7 @@ namespace WrathCombo.AutoRotation
                         if (mustTarget)
                             Svc.Targets.Target = target;
 
-                        return ActionManager.Instance()->UseAction(ActionType.Action, gameAct, (mustTarget && target != null) || switched ? target.GameObjectId : Player.Object.GameObjectId);
+                        return ActionManager.Instance()->UseAction(ActionType.Action, outAct, (mustTarget && target != null) || switched ? target.GameObjectId : Player.Object.GameObjectId);
                     }
                 }
                 return false;
