@@ -45,11 +45,13 @@ namespace WrathCombo.Combos.PvP
 
         public static class Config
         {
+
             public static UserInt
                 SAMPvP_Soten_Range = new("SAMPvP_Soten_Range", 3),
                 SAMPvP_Soten_Charges = new("SAMPvP_Soten_Charges", 1),
                 SAMPvP_Chiten_PlayerHP = new("SAMPvP_Chiten_PlayerHP", 70),
-                SAMPvP_Mineuchi_TargetHP = new("SAMPvP_Mineuchi_TargetHP", 40);
+                SAMPvP_Mineuchi_TargetHP = new("SAMPvP_Mineuchi_TargetHP", 40),
+                SAMPVP_Zantetsuken = "SAMPVP_Zantetsuken";
 
             public static UserBool
                 SAMPvP_Soten_SubOption = new("SAMPvP_Soten_SubOption"),
@@ -62,6 +64,7 @@ namespace WrathCombo.Combos.PvP
 
             protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
             {
+
                 #region Variables
                 float targetDistance = GetTargetDistance();
                 float targetCurrentPercentHp = GetTargetHPPercent();
@@ -87,9 +90,15 @@ namespace WrathCombo.Combos.PvP
                 bool isSotenPrimed = chargesSoten > Config.SAMPvP_Soten_Charges && !hasKaiten && !hasBind && !hasPrioWeaponskill;
                 bool isTargetInvincible = TargetHasEffectAny(PLDPvP.Buffs.HallowedGround) || TargetHasEffectAny(DRKPvP.Buffs.UndeadRedemption);
                 #endregion
+                  
+                var kuzushiValue = PluginConfiguration.GetCustomIntValue(Config.SAMPVP_Zantetsuken);
 
                 if (actionID is Yukikaze or Gekko or Kasha)
                 {
+                  
+                    // Zantetsuken kill
+                    if (IsEnabled(CustomComboPreset.SAMPvP_BurstMode_Zantetsuken) && NearbyObjectHasEffect(Debuffs.Kuzushi) >= kuzushiValue && CanUseAction(Zantetsuken))
+                            return Zantetsuken;
                     // Zantetsuken
                     if (IsEnabled(CustomComboPreset.SAMPvP_Zantetsuken) && isZantetsukenPrimed && !isTargetInvincible)
                         return OriginalHook(Zantetsuken);

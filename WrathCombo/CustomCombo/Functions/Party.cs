@@ -2,6 +2,7 @@
 using ECommons.DalamudServices;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using WrathCombo.Services;
 
 namespace WrathCombo.CustomComboNS.Functions
@@ -11,6 +12,9 @@ namespace WrathCombo.CustomComboNS.Functions
         /// <summary> Checks if the player is in a party. Optionally, refine by minimum party size. </summary>
         /// <param name="partySize"> The minimum amount of party members required. </param>
         public static bool IsInParty(int partySize = 2) => GetPartyMembers().Count >= partySize;
+
+        public static bool IsInRaid() => (Svc.Party.Length > 4);
+
 
         /// <summary> Gets the party list </summary>
         /// <returns> Current party list. </returns>
@@ -80,6 +84,26 @@ namespace WrathCombo.CustomComboNS.Functions
                 PartyCount++;
             }
             return PartyCount == 0 ? 0 : (float)BuffCount / PartyCount * 100f; //Div by 0 check...just in case....
+        }
+
+        public static double GetFarthestPartyMemberDistance()
+        {
+            const double defaultDistance = 0;
+            if (!IsInParty())
+            {
+                return defaultDistance;
+            }
+
+            var localPlayer = LocalPlayer;
+            var otherPlayers = Svc.Party;
+
+            var distances = from player in otherPlayers
+                            let distance = Vector3.Distance(localPlayer.Position, player.Position)
+                            orderby distance descending
+                            select distance;
+
+
+            return distances.FirstOrDefault() > 0 ? distances.FirstOrDefault() : defaultDistance;
         }
     }
 }

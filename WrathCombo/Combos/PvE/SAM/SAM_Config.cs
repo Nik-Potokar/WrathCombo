@@ -159,6 +159,11 @@ internal partial class SAM
                     UserConfig.DrawAdditionalBoolChoice(SAMPvP.Config.SAMPvP_Soten_SubOption, "Yukikaze Only", "Also requires next weaponskill to be Yukikaze.");
 
                     break;
+                
+                 case CustomComboPreset.SAMPvP_BurstMode_Zantetsuken:
+                    UserConfig.DrawSliderInt(1, 10, SAMPvP.Config.SAMPVP_Zantetsuken,
+                        "Use when set amount of enemies have Kuzushi status.");
+                    break;
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using WrathCombo.Attributes;
+﻿using Lumina.Excel.Sheets;
+using WrathCombo.Attributes;
 using WrathCombo.Combos.PvE;
 using WrathCombo.Combos.PvP;
 
@@ -163,6 +164,78 @@ namespace WrathCombo.Combos
 
         #endregion
 
+        #region Potions
+        [Potion]
+        [CustomComboInfo("Potion Menu", "Add Potion ID's for each of the roles.", All.JobID)]
+        Potion_Menu = 10000094,
+
+        [Potion]
+        [ParentCombo(Potion_Menu)]
+        [CustomComboInfo("Use only in raid", "Uses potions only in 8 man parties.", All.JobID)]
+        UsePotionOnlyInRaid = 100000121,
+
+        [Potion]
+        [ParentCombo(Potion_Menu)]
+        [ConflictingCombos(PotionAllowUnbuffed)]
+        [CustomComboInfo("Use Potions ONLY in buff windows", "Aligns potion usage with 2 minute burst windows.", All.JobID)]
+        PotionOnlyOnBuffs = 100000122,
+
+        [Potion]
+        [ParentCombo(Potion_Menu)]
+        [ConflictingCombos(PotionOnlyOnBuffs)]
+        [CustomComboInfo("Allow Unbuffed Potion", "Allows the use of the unbuffed potion - Great for shorter fights aka non-ultimate.", All.JobID)]
+        PotionAllowUnbuffed = 100000123,
+
+        [Potion]
+        [ParentCombo(Potion_Menu)]
+        [ConflictingCombos(PotionOnlyOnBuffs, PotionAllowUnbuffed)]
+        [CustomComboInfo("Custom Potion Time", "Allows you to customize when to use the potion. Time is in seconds + 30sec leeway range.", All.JobID)]
+        PotionCustomTime = 100000124,
+
+        /*
+        [ParentCombo(Potion_Menu)]
+        [ConflictingCombos(PotionOnlyOnBuffs, PotionAllowUnbuffed)]
+        [CustomComboInfo("Custom Potion Time", "Allows you to customize your own potion times.", ADV.JobID)]
+        CustomPotionTime = 100000124,
+        */
+        // Strength Potions
+        [Potion]
+        [ParentCombo(Potion_Menu)]
+        [CustomComboInfo("Strength Potion", "Applies to all STR Potion Roles.", All.JobID)]
+        StrengthPotion = 10000095,
+
+        // Dexterity Potions
+        [Potion]
+        [ParentCombo(Potion_Menu)]
+        [CustomComboInfo("Dexterity Potion", "Applies to all DEX Potion Roles.", All.JobID)]
+        DexterityPotion = 10000102,
+
+        // Intelligence Potions
+        [Potion]
+        [ParentCombo(Potion_Menu)]
+        [CustomComboInfo("Intelligence Potion", "Applies to all INT Potion Roles.", All.JobID)]
+        IntelligencePotion = 10000110,
+
+        // Mind Potions
+        [Potion]
+        [ParentCombo(Potion_Menu)]
+        [CustomComboInfo("Mind Potion", "Applies to all MND Potion Roles.", All.JobID)]
+        MindPotion = 10000116,
+
+        #endregion
+
+        #region Extras
+
+
+        [ReplaceSkill(All.ArmsLength, All.Surecast)]
+        [CustomComboInfo("Dynamic Knockback Immunity", "Automatically switches to Surecast or ArmsLength based on your current job.", ADV.JobID)]
+        ALL_Dynamic_Knockback_Immunity = 10000150,
+
+        [CustomComboInfo("Action Changer", "Changes actions on the fly", ADV.JobID)]
+        ALL_CustomActionChanger = 10000151,
+
+
+        #endregion
         //Non-gameplay Features
         //[CustomComboInfo("Output Combat Log", "Outputs your performed actions to the chat.", ADV.JobID)]
         //AllOutputCombatLog = 100094,
@@ -2722,7 +2795,7 @@ namespace WrathCombo.Combos
         PCT_ST_AdvancedMode = 20005,
 
         [ParentCombo(PCT_ST_AdvancedMode)]
-        [CustomComboInfo("Balance Opener Option", $"Uses the Balance Opener depending on your current level. \n Supports lvl 70, 80, 90, 92, 100. \n - Requirements: \n - Starry Muse off cooldown \n - Pom. Weapon, Landscape Motif", PCT.JobID)]
+        [CustomComboInfo("Balance Opener Menu Option", $"Uses the Balance Opener depending on your current level. \n Supports lvl 70, 80, 90, 92, 100. \n - Requirements: \n - Starry Muse off cooldown \n - Pom. Weapon, Landscape Motif \n Pick an opener setting below.", PCT.JobID)]
         PCT_ST_Advanced_Openers = 20006,
 
         [ParentCombo(PCT_ST_Advanced_Openers)]
@@ -2741,7 +2814,7 @@ namespace WrathCombo.Combos
         PCT_ST_Advanced_Openers_3 = 20038,
 
         [ParentCombo(PCT_ST_Advanced_Openers)]
-        [CustomComboInfo("Early Balance Opener Option", $"Uses Balance Opener. This setting only applies to when below lvl 100", PCT.JobID)]
+        [CustomComboInfo("Early Balance Opener Option", $"Uses Early Starry Muse Balance Opener depending on your current level. This ONLY applies to below lvl 100", PCT.JobID)]
         PCT_ST_Advanced_Openers_EarlyOpener = 20007,
 
         [ParentCombo(PCT_ST_AdvancedMode)]
@@ -5417,6 +5490,7 @@ namespace WrathCombo.Combos
 
         #endregion
 
+
         #region BARD
         [PvPCustomCombo]
         [CustomComboInfo("Burst Mode", "Turns Powerful Shot into an all-in-one damage button.", BRDPvP.JobID)]
@@ -6030,6 +6104,15 @@ namespace WrathCombo.Combos
         SAMPvP_Meikyo = 125001,
 
         [PvPCustomCombo]
+        [ParentCombo(SAMPvP_BurstMode)]
+        [CustomComboInfo("Burst Mode on Kasha Combo Option", "Adds Burst Mode to Kasha Combo instead.", SAM.JobID, 1)]
+        SAMPvP_BurstMode_MainCombo = 125003,
+
+
+        [ParentCombo(SAMPvP_BurstMode)]
+        [CustomComboInfo("Zanshin Option", "Adds Zanshin to Burst Mode.", SAM.JobID)]
+        SAMPvP_BurstMode_Zanshin = 125007,
+
         [ParentCombo(SAMPvP_Burst)]
         [CustomComboInfo("Chiten Option", "Uses Chiten when available.\n- Will not use outside combat.\n- Requires player's HP to be under:", SAMPvP.JobID)]
         SAMPvP_Chiten = 125002,
@@ -6049,7 +6132,12 @@ namespace WrathCombo.Combos
         [CustomComboInfo("Zantetsuken Option", "Uses Zantetsuken when available.\n- Will not use if target is invulnerable.\n- Requires target to have player's Kuzushi.", SAMPvP.JobID)]
         SAMPvP_Zantetsuken = 125005,
 
-        // Last value = 125005
+        [PvPCustomCombo]
+        [ParentCombo(SAMPvP_BurstMode)]
+        [CustomComboInfo("Zantetsuken Option", "Adds Zantetsuken to Burst Mode instead.", SAM.JobID, 1)]
+        SAMPvP_BurstMode_Zantetsuken = 125008,
+
+        // Last value = 125008
 
         #endregion
 

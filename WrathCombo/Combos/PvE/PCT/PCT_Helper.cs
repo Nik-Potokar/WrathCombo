@@ -118,7 +118,7 @@ internal partial class PCT
 
             if (currentState == OpenerState.InOpener)
             {
-                if (CustomComboFunctions.IsEnabled(CustomComboPreset.PCT_ST_Advanced_Openers_1))
+                if(CustomComboFunctions.IsEnabled(CustomComboPreset.PCT_ST_Advanced_Openers_1))
                 {
                     if (CustomComboFunctions.WasLastAction(RainbowDrip) && OpenerStep == 1) OpenerStep++;
                     else if (OpenerStep == 1) actionID = RainbowDrip;

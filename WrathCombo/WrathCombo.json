@@ -1,11 +1,11 @@
 {
-  "Author": "Team Wrath",
+  "Author": "Team Wrath - Aki's Version'",
   "Name": "Wrath Combo",
   "InternalName": "WrathCombo",
   "DalamudApiLevel": 11,
   "Punchline": "Condenses combos and mutually exclusive abilities onto a single button - and then some.",
   "Description": "Condenses combos and mutually exclusive abilities onto a single button - and then some.",
-  "RepoUrl": "https://github.com/PunishXIV/WrathCombo",
-  "IconUrl": "https://s3.puni.sh/media/plugin/60/icon-2bwhkn3zf1f.png",
+  "RepoUrl": "https://github.com/Nik-Potokar/WrathCombo",
+  "IconUrl": "https://raw.githubusercontent.com/Nik-Potokar/XIVSlothCombo/main/res/plugin/xivslothcombo.png",
   "Changelog": "Please check the project's GitHub or Discord for a full changelog."
 }

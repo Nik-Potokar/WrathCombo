@@ -14,6 +14,7 @@ namespace WrathCombo.Core
         private static HashSet<CustomComboPreset>? VariantCombos;
         private static HashSet<CustomComboPreset>? BozjaCombos;
         private static HashSet<CustomComboPreset>? EurekaCombos;
+        private static HashSet<CustomComboPreset>? PotionCombos;
         private static Dictionary<CustomComboPreset, CustomComboPreset[]>? ConflictingCombos;
         private static Dictionary<CustomComboPreset, CustomComboPreset?>? ParentCombos;  // child: parent
 
@@ -34,6 +35,10 @@ namespace WrathCombo.Core
 
             EurekaCombos = Enum.GetValues<CustomComboPreset>()
                 .Where(preset => preset.GetAttribute<EurekaAttribute>() != default)
+                .ToHashSet();
+
+            PotionCombos = Enum.GetValues<CustomComboPreset>()
+                .Where(preset => preset.GetAttribute<PotionAttribute>() != default)
                 .ToHashSet();
 
             // Conflicting combos
@@ -75,6 +80,11 @@ namespace WrathCombo.Core
         /// <returns> The boolean representation. </returns>
         public static bool IsEureka(CustomComboPreset preset) => EurekaCombos.Contains(preset);
 
+        /// <summary> Gets a value indicating whether a preset is secret. </summary>
+        /// <param name="preset"> Preset to check. </param>
+        /// <returns> The boolean representation. </returns>
+        public static bool IsPotion(CustomComboPreset preset) => PotionCombos.Contains(preset);
+
         /// <summary> Gets the parent combo preset if it exists, or null. </summary>
         /// <param name="preset"> Preset to check. </param>
         /// <returns> The parent preset. </returns>
@@ -90,5 +100,7 @@ namespace WrathCombo.Core
 
         /// <summary> Get all the info from conflicted combos. </summary>
         public static List<CustomComboPreset[]> GetAllConflictOriginals() => ConflictingCombos.Values.ToList();
+
+ 
     }
 }
