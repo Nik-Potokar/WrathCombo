@@ -11,10 +11,7 @@ namespace WrathCombo.CustomComboNS.Functions
     {
         /// <summary> Checks if the player is in a party. Optionally, refine by minimum party size. </summary>
         /// <param name="partySize"> The minimum amount of party members required. </param>
-        public static bool IsInParty(int? partySize = null)
-        {
-            return GetPartyMembers().Count > 1;
-        }
+        public static bool IsInParty(int partySize = 2) => GetPartyMembers().Count >= partySize;
 
         public static bool IsInRaid() => (Svc.Party.Length > 4);
 
@@ -28,7 +25,7 @@ namespace WrathCombo.CustomComboNS.Functions
             {
                 var member = GetPartySlot(i);
                 if (member != null)
-                    output.Add(member as IBattleChara);
+                    output.Add((IBattleChara)member);
             }
             return output;
         }

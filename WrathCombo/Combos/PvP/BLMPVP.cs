@@ -34,7 +34,7 @@ namespace WrathCombo.Combos.PvP
                 SoulResonance = 3222,
                 Polyglot = 3169,
                 ElementalStar = 4317,
-                WreathOfFire = 4315,
+                WreathOfFire= 4315,
                 Paradox = 3223;
         }
 

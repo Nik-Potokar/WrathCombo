@@ -95,12 +95,12 @@ namespace WrathCombo.Data
                     ActionTimestamps[actionId] = Environment.TickCount64;
 
                 CheckForChangedTarget(actionId, ref targetObjectId);
-                SendActionHook!.Original(targetObjectId, actionType, actionId, sequence, a5, a6, a7, a8, a9);
                 TimeLastActionUsed = DateTime.Now;
                 LastAction = actionId;
                 ActionType = actionType;
 
                 UpdateHelpers(actionId);
+                SendActionHook!.Original(targetObjectId, actionType, actionId, sequence, a5, a6, a7, a8, a9);
 
                 Svc.Log.Verbose($"{actionId} {sequence} {a5} {a6} {a7} {a8} {a9}");
             }
@@ -219,6 +219,13 @@ namespace WrathCombo.Data
             return (GetAttackType(lastAction) == GetAttackType(secondLastAction) && GetAttackType(lastAction) == ActionAttackType.Ability);
         }
 
+        public static bool HasWeaved()
+        {
+            if (CombatActions.Count < 1) return false;
+            var lastAction = CombatActions.Last();
+
+            return GetAttackType(lastAction) == ActionAttackType.Ability;
+        }
 
         public static int NumberOfGcdsUsed => CombatActions.Count(x => GetAttackType(x) == ActionAttackType.Weaponskill || GetAttackType(x) == ActionAttackType.Spell);
         public static uint LastAction { get; set; } = 0;
