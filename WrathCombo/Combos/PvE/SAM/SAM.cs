@@ -835,24 +835,24 @@ internal partial class SAM
             switch (actionID)
             {
                 case Shinten:
-                {
-                    if (IsEnabled(CustomComboPreset.SAM_Shinten))
                     {
-                        if (IsEnabled(CustomComboPreset.SAM_Shinten_Senei) &&
-                            ActionReady(Senei))
-                            return Senei;
+                        if (IsEnabled(CustomComboPreset.SAM_Shinten))
+                        {
+                            if (IsEnabled(CustomComboPreset.SAM_Shinten_Senei) &&
+                                ActionReady(Senei))
+                                return Senei;
 
-                        if (IsEnabled(CustomComboPreset.SAM_Shinten_Zanshin) &&
-                            HasEffect(Buffs.ZanshinReady))
-                            return Zanshin;
+                            if (IsEnabled(CustomComboPreset.SAM_Shinten_Zanshin) &&
+                                HasEffect(Buffs.ZanshinReady))
+                                return Zanshin;
 
-                        if (IsEnabled(CustomComboPreset.SAM_Shinten_Shoha) &&
-                            ActionReady(Shoha) && gauge.MeditationStacks is 3)
-                            return Shoha;
+                            if (IsEnabled(CustomComboPreset.SAM_Shinten_Shoha) &&
+                                ActionReady(Shoha) && gauge.MeditationStacks is 3)
+                                return Shoha;
+                        }
+
+                        break;
                     }
-
-                    break;
-                }
             }
 
             return actionID;
@@ -920,18 +920,18 @@ internal partial class SAM
             switch (actionID)
             {
                 case Gyoten:
-                {
-                    if (gauge.Kenki >= 10)
                     {
-                        if (InMeleeRange())
-                            return Yaten;
+                        if (gauge.Kenki >= 10)
+                        {
+                            if (InMeleeRange())
+                                return Yaten;
 
-                        if (!InMeleeRange())
-                            return Gyoten;
+                            if (!InMeleeRange())
+                                return Gyoten;
+                        }
+
+                        break;
                     }
-
-                    break;
-                }
             }
 
             return actionID;

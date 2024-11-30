@@ -6104,12 +6104,12 @@ namespace WrathCombo.Combos
         SAMPvP_Meikyo = 125001,
 
         [PvPCustomCombo]
-        [ParentCombo(SAMPvP_BurstMode)]
+        [ParentCombo(SAMPvP_Burst)]
         [CustomComboInfo("Burst Mode on Kasha Combo Option", "Adds Burst Mode to Kasha Combo instead.", SAM.JobID, 1)]
         SAMPvP_BurstMode_MainCombo = 125003,
 
 
-        [ParentCombo(SAMPvP_BurstMode)]
+        [ParentCombo(SAMPvP_Burst)]
         [CustomComboInfo("Zanshin Option", "Adds Zanshin to Burst Mode.", SAM.JobID)]
         SAMPvP_BurstMode_Zanshin = 125007,
 
@@ -6120,7 +6120,7 @@ namespace WrathCombo.Combos
         [PvPCustomCombo]
         [ParentCombo(SAMPvP_Burst)]
         [CustomComboInfo("Mineuchi Option", "Uses Mineuchi when available.\n- Will not use against non-players.\n- Requires target's HP to be under:", SAMPvP.JobID)]
-        SAMPvP_Mineuchi = 125003,
+        SAMPvP_Mineuchi = 125009,
 
         [PvPCustomCombo]
         [ParentCombo(SAMPvP_Burst)]
@@ -6133,7 +6133,7 @@ namespace WrathCombo.Combos
         SAMPvP_Zantetsuken = 125005,
 
         [PvPCustomCombo]
-        [ParentCombo(SAMPvP_BurstMode)]
+        [ParentCombo(SAMPvP_Burst)]
         [CustomComboInfo("Zantetsuken Option", "Adds Zantetsuken to Burst Mode instead.", SAM.JobID, 1)]
         SAMPvP_BurstMode_Zantetsuken = 125008,
 
