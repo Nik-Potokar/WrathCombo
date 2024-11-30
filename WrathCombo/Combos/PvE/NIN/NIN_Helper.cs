@@ -208,7 +208,7 @@ internal partial class NIN
                     return false;
                 }
 
-                if (ActionWatching.LastAction == Ten)
+                if (ActionWatching.LastAction == TenCombo)
                 {
                     actionID = CustomComboFunctions.OriginalHook(Jin);
 
@@ -385,7 +385,7 @@ internal partial class NIN
                     return false;
                 }
 
-                if (ActionWatching.LastAction == Chi)
+                if (ActionWatching.LastAction == ChiCombo)
                 {
                     actionID = CustomComboFunctions.OriginalHook(Ten);
 
@@ -424,7 +424,7 @@ internal partial class NIN
                     return false;
                 }
 
-                if (ActionWatching.LastAction == Chi)
+                if (ActionWatching.LastAction == ChiCombo)
                 {
                     actionID = CustomComboFunctions.OriginalHook(Jin);
 
@@ -451,15 +451,15 @@ internal partial class NIN
 
         public bool ContinueCurrentMudra(ref uint actionID)
         {
-            if ((CustomComboFunctions.WasLastAction(FumaShuriken) ||
-                 CustomComboFunctions.WasLastAction(Katon) ||
-                 CustomComboFunctions.WasLastAction(Raiton) ||
-                 CustomComboFunctions.WasLastAction(Hyoton) ||
-                 CustomComboFunctions.WasLastAction(Huton) ||
-                 CustomComboFunctions.WasLastAction(Doton) ||
-                 CustomComboFunctions.WasLastAction(Suiton) ||
-                 CustomComboFunctions.WasLastAction(GokaMekkyaku) ||
-                 CustomComboFunctions.WasLastAction(HyoshoRanryu)) &&
+            if ((ActionWatching.LastAction == FumaShuriken ||
+                 ActionWatching.LastAction == Katon ||
+                 ActionWatching.LastAction == Raiton ||
+                 ActionWatching.LastAction == Hyoton ||
+                 ActionWatching.LastAction == Huton ||
+                 ActionWatching.LastAction == Doton ||
+                 ActionWatching.LastAction == Suiton ||
+                 ActionWatching.LastAction == GokaMekkyaku ||
+                 ActionWatching.LastAction == HyoshoRanryu) &&
                 !justResetMudra)
                 CurrentMudra = MudraState.None;
 
