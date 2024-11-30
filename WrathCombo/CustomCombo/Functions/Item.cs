@@ -155,7 +155,6 @@ namespace WrathCombo.CustomComboNS.Functions
 
             if (canWeaveWeaponskill || canWeaveSpell)
             {
-                Svc.Log.Debug($"USE ITEM FUNCTION WORKS");
 
                 return ItemManager.UseItem(itemID);
             }

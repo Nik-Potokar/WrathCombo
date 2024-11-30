@@ -586,79 +586,88 @@ namespace WrathCombo.Combos.PvE
 
           };
 
+        private static readonly float[] DefaultPotionTimes = { 365, 710, 1080 };
+        private static readonly float[] AllowUnbuffedPotionTimes = { 365, 710, 980, 1080 };
+
+        public static float[] GetPotionTimes()
+        {
+            if (CustomComboFunctions.IsEnabled(CustomComboPreset.PotionCustomTime))
+            {
+                return new float[]
+                {
+                    Config.All_Custom_Potion_Time1,
+                    Config.All_Custom_Potion_Time2,
+                    Config.All_Custom_Potion_Time3,
+                    Config.All_Custom_Potion_Time4,
+                    Config.All_Custom_Potion_Time5
+                }.Where(time => time > 0).ToArray();
+            }
+            else if (CustomComboFunctions.IsEnabled(CustomComboPreset.PotionAllowUnbuffed))
+            {
+                return AllowUnbuffedPotionTimes;
+            }
+
+            return DefaultPotionTimes;
+        }
+
+        // Helper method to check if in opener phase
+        public static bool IsInOpenerPhase(float currentTime, int potionStatus)
+        {
+            return currentTime <= 15 && potionStatus == 0 &&
+                   OpenerSkills.Any(action => CustomComboFunctions.CanWeave(action) && (CustomComboFunctions.WasLastWeaponskill(action) || CustomComboFunctions.WasLastSpell(action)));
+        }
+
+        // Helper method to check if we are in a valid potion window
+        public static bool IsInPotionWindow(float currentTime, float[] potionTimes)
+        {
+            return potionTimes.Any(time => currentTime >= time && currentTime <= time + 30);
+        }
+
+        // Helper method to determine if rotation potion should be used
+        public static bool ShouldUseRotationPotion()
+        {
+            return RotationSkills.Any(action => CustomComboFunctions.CanWeave(action));
+        }
+
         #endregion
 
         #region STR POTION
-        // Strength Potion
+
         internal class ALL_Strength_Potion : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.StrengthPotion;
-
+            protected uint[] ValidJobIds => new uint[] { 21, 19, 32, 37, 20, 39 };
             protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
             {
                 uint strengthPotion = (uint)Service.Configuration.StrengthPotion;
-
-                float[] potionTimes;
-
-                if (IsEnabled(CustomComboPreset.PotionCustomTime))
-                {
-
-                    // Get custom potion times if enabled
-                    potionTimes = new float[]
-                    {
-                      Config.All_Custom_Potion_Time1,
-                      Config.All_Custom_Potion_Time2,
-                      Config.All_Custom_Potion_Time3,
-                      Config.All_Custom_Potion_Time4,
-                      Config.All_Custom_Potion_Time5
-
-                    }.Where(time => time > 0).ToArray(); // Ensure times are positive
-                }
-                else if (IsEnabled(CustomComboPreset.PotionAllowUnbuffed))
-                {
-                    potionTimes = new float[] { 365, 710, 980, 1080 };
-                }
-                else
-                {
-                    potionTimes = new float[] { 365, 710, 1080 };
-                }
-
-                // Cache current combat time to avoid redundant calculations
                 float currentTime = (float)CombatEngageDuration().TotalSeconds;
+                int potionStatus = (int)GetItemStatus(strengthPotion);
 
-                // Determine if it's the opener phase (within the first 15 seconds)
-                bool isOpenerPhase = currentTime <= 15 &&
-                                     OpenerSkills.Any(action => CanWeave(action) &&
-                                     (WasLastWeaponskill(action) || WasLastSpell(action)));
+                // Retrieve potion times only once
+                float[] potionTimes = GetPotionTimes();
 
-                // Check if we are in a valid potion window
-                bool isInPotionWindow = potionTimes.Any(time => currentTime >= time && currentTime <= time + 30);
+                // Determine if we are in an opener phase and potion window
+                bool isInOpenerPhase = IsInOpenerPhase(currentTime, potionStatus) && ValidJobIds.Contains(LocalPlayer.ClassJob.RowId);
+                bool isInPotionWindow = IsInPotionWindow(currentTime, potionTimes);
+                bool shouldUseRotationPotion = isInPotionWindow && potionStatus == 0 && ShouldUseRotationPotion() && ValidJobIds.Contains(LocalPlayer.ClassJob.RowId);
 
-                // Determine if we should use a potion during rotation
-                bool shouldUseRotationPotion = isInPotionWindow &&
-                                               RotationSkills.Any(action => CanWeave(action));
-
-                // Exit early if potion usage is disabled or we're not in combat
-                if (!IsEnabled(CustomComboPreset.StrengthPotion) || !InCombat() || GetItemStatus(strengthPotion) != 0)
-                    return actionID;
-
-                // Check if we should only use in raid and if we're in a raid
-                bool isInRaid = !IsEnabled(CustomComboPreset.UsePotionOnlyInRaid) || IsInRaid();
-
-                uint[] validIds = { 21, 19, 32, 37, 20, 39 };
-
-                // Check job-specific conditions and decide on potion use
-                if (CanWeave(ActionWatching.LastAction))
+                // Check combat status and potion status to decide on early exit
+                if (!InCombat() && potionStatus != 0)
                 {
-                    if (isOpenerPhase || shouldUseRotationPotion)
-                    {
-                        UsePotion(strengthPotion);
-                    }
+                    return actionID;
+                }
+
+                // Use the potion if we meet the conditions
+                if (isInOpenerPhase || shouldUseRotationPotion)
+                {
+                    UsePotion(strengthPotion);
                 }
 
                 return actionID;
             }
+
         }
+
         #endregion
 
         #region DEX POTION
@@ -666,67 +675,31 @@ namespace WrathCombo.Combos.PvE
         internal class ALL_Dexterity_Potion : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DexterityPotion;
-
+            protected  uint[] ValidJobIds => new uint[] { 22, 30, 41, 5, 31, 38 };
             protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
             {
                 uint dexterityPotion = (uint)Service.Configuration.DexterityPotion;
-
-                float[] potionTimes;
-
-                if (IsEnabled(CustomComboPreset.PotionCustomTime))
-                {
-
-                    // Get custom potion times if enabled
-                    potionTimes = new float[]
-                    {
-                  Config.All_Custom_Potion_Time1,
-                  Config.All_Custom_Potion_Time2,
-                  Config.All_Custom_Potion_Time3,
-                  Config.All_Custom_Potion_Time4,
-                  Config.All_Custom_Potion_Time5
-
-                    }.Where(time => time > 0).ToArray(); // Ensure times are positive
-                }
-                else if (IsEnabled(CustomComboPreset.PotionAllowUnbuffed))
-                {
-                    potionTimes = new float[] { 365, 710, 980, 1080 };
-                }
-                else
-                {
-                    potionTimes = new float[] { 365, 710, 1080 };
-                }
-
-                // Cache current combat time to avoid redundant calculations
                 float currentTime = (float)CombatEngageDuration().TotalSeconds;
+                int potionStatus = (int)GetItemStatus(dexterityPotion);
 
-                // Determine if it's the opener phase (within the first 15 seconds)
-                bool isOpenerPhase = currentTime <= 15 &&
-                                     OpenerSkills.Any(action => CanWeave(action) &&
-                                     (WasLastWeaponskill(action) || WasLastSpell(action)));
+                // Retrieve potion times only once
+                float[] potionTimes = GetPotionTimes();
 
-                // Check if we are in a valid potion window
-                bool isInPotionWindow = potionTimes.Any(time => currentTime >= time && currentTime <= time + 30);
+                // Determine if we are in an opener phase and potion window
+                bool isInOpenerPhase = IsInOpenerPhase(currentTime, potionStatus) && ValidJobIds.Contains(LocalPlayer.ClassJob.RowId);
+                bool isInPotionWindow = IsInPotionWindow(currentTime, potionTimes);
+                bool shouldUseRotationPotion = isInPotionWindow && potionStatus == 0 && ShouldUseRotationPotion() && ValidJobIds.Contains(LocalPlayer.ClassJob.RowId);
 
-                // Determine if we should use a potion during rotation
-                bool shouldUseRotationPotion = isInPotionWindow &&
-                                               RotationSkills.Any(action => CanWeave(action));
-
-                // Exit early if potion usage is disabled or we're not in combat
-                if (!IsEnabled(CustomComboPreset.DexterityPotion) || !InCombat() || GetItemStatus(dexterityPotion) != 0)
-                    return actionID;
-
-                // Check if we should only use in raid and if we're in a raid
-                bool isInRaid = !IsEnabled(CustomComboPreset.UsePotionOnlyInRaid) || IsInRaid();
-
-                uint[] validIds = { 22, 30, 41, 5, 31, 38 };
-
-                // Check job-specific conditions and decide on potion use
-                if (isInRaid && validIds.Contains(LocalPlayer.ClassJob.RowId) && CanWeave(ActionWatching.LastAction))
+                // Check combat status and potion status to decide on early exit
+                if (!InCombat() && potionStatus != 0)
                 {
-                    if (isOpenerPhase || shouldUseRotationPotion)
-                    {
-                        UsePotion(dexterityPotion);
-                    }
+                    return actionID;
+                }
+
+                // Use the potion if we meet the conditions
+                if (isInOpenerPhase || shouldUseRotationPotion)
+                {
+                    UsePotion(dexterityPotion);
                 }
 
                 return actionID;
@@ -738,67 +711,31 @@ namespace WrathCombo.Combos.PvE
         internal class ALL_Intelligence_Potion : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.IntelligencePotion;
-
+            protected uint[] ValidJobIds => new uint[] { 7, 27, 35, 36, 42 };
             protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
             {
-                uint intelligencePotion = (uint)Service.Configuration.InteligencePotion;
-
-                float[] potionTimes;
-
-                if (IsEnabled(CustomComboPreset.PotionCustomTime))
-                {
-
-                    // Get custom potion times if enabled
-                    potionTimes = new float[]
-                    {
-                  Config.All_Custom_Potion_Time1,
-                  Config.All_Custom_Potion_Time2,
-                  Config.All_Custom_Potion_Time3,
-                  Config.All_Custom_Potion_Time4,
-                  Config.All_Custom_Potion_Time5
-
-                    }.Where(time => time > 0).ToArray(); // Ensure times are positive
-                }
-                else if (IsEnabled(CustomComboPreset.PotionAllowUnbuffed))
-                {
-                    potionTimes = new float[] { 365, 710, 980, 1080 };
-                }
-                else
-                {
-                    potionTimes = new float[] { 365, 710, 1080 };
-                }
-
-                // Cache current combat time to avoid redundant calculations
+                uint intPotion = (uint)Service.Configuration.InteligencePotion;
                 float currentTime = (float)CombatEngageDuration().TotalSeconds;
+                int potionStatus = (int)GetItemStatus(intPotion);
 
-                // Determine if it's the opener phase (within the first 15 seconds)
-                bool isOpenerPhase = currentTime <= 15 &&
-                                     OpenerSkills.Any(action => CanWeave(action) &&
-                                     (WasLastWeaponskill(action) || WasLastSpell(action)));
+                // Retrieve potion times only once
+                float[] potionTimes = GetPotionTimes();
 
-                // Check if we are in a valid potion window
-                bool isInPotionWindow = potionTimes.Any(time => currentTime >= time && currentTime <= time + 30);
+                // Determine if we are in an opener phase and potion window
+                bool isInOpenerPhase = IsInOpenerPhase(currentTime, potionStatus) && ValidJobIds.Contains(LocalPlayer.ClassJob.RowId);
+                bool isInPotionWindow = IsInPotionWindow(currentTime, potionTimes);
+                bool shouldUseRotationPotion = isInPotionWindow && potionStatus == 0 && ShouldUseRotationPotion() && ValidJobIds.Contains(LocalPlayer.ClassJob.RowId);
 
-                // Determine if we should use a potion during rotation
-                bool shouldUseRotationPotion = isInPotionWindow &&
-                                               RotationSkills.Any(action => CanWeave(action));
-
-                // Exit early if potion usage is disabled or we're not in combat
-                if (!IsEnabled(CustomComboPreset.IntelligencePotion) || !InCombat() || GetItemStatus(intelligencePotion) != 0)
-                    return actionID;
-
-                // Check if we should only use in raid and if we're in a raid
-                bool isInRaid = !IsEnabled(CustomComboPreset.UsePotionOnlyInRaid) || IsInRaid();
-
-                uint[] validIds = { 7, 27, 35, 36, 42 };
-
-                // Check job-specific conditions and decide on potion use
-                if (isInRaid && validIds.Contains(LocalPlayer.ClassJob.RowId) && CanWeave(ActionWatching.LastAction))
+                // Check combat status and potion status to decide on early exit
+                if (!InCombat() && potionStatus != 0)
                 {
-                    if (isOpenerPhase || shouldUseRotationPotion)
-                    {
-                        UsePotion(intelligencePotion);
-                    }
+                    return actionID;
+                }
+
+                // Use the potion if we meet the conditions
+                if (isInOpenerPhase || shouldUseRotationPotion)
+                {
+                    UsePotion(intPotion);
                 }
 
                 return actionID;
@@ -810,76 +747,37 @@ namespace WrathCombo.Combos.PvE
         internal class ALL_Mind_Potion : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MindPotion;
-
+            protected uint[] ValidJobIds => new uint[] { 24, 28, 40, 33 };
             protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
             {
                 uint mindPotion = (uint)Service.Configuration.MindPotion;
-
-                float[] potionTimes;
-
-                if (IsEnabled(CustomComboPreset.PotionCustomTime))
-                {
-
-                    // Get custom potion times if enabled
-                    potionTimes = new float[]
-                    {
-                  Config.All_Custom_Potion_Time1,
-                  Config.All_Custom_Potion_Time2,
-                  Config.All_Custom_Potion_Time3,
-                  Config.All_Custom_Potion_Time4,
-                  Config.All_Custom_Potion_Time5
-
-                    }.Where(time => time > 0).ToArray(); // Ensure times are positive
-                }
-                else if (IsEnabled(CustomComboPreset.PotionAllowUnbuffed))
-                {
-                    potionTimes = new float[] { 365, 710, 980, 1080 };
-                }
-                else
-                {
-                    potionTimes = new float[] { 365, 710, 1080 };
-                }
-
-                // Cache current combat time to avoid redundant calculations
                 float currentTime = (float)CombatEngageDuration().TotalSeconds;
+                int potionStatus = (int)GetItemStatus(mindPotion);
 
-                // Determine if it's the opener phase (within the first 15 seconds)
-                bool isOpenerPhase = currentTime <= 15 &&
-                                     OpenerSkills.Any(action => CanWeave(action) &&
-                                     (WasLastWeaponskill(action) || WasLastSpell(action)));
+                // Retrieve potion times only once
+                float[] potionTimes = GetPotionTimes();
 
-                // Check if we are in a valid potion window
-                bool isInPotionWindow = potionTimes.Any(time => currentTime >= time && currentTime <= time + 30);
+                // Determine if we are in an opener phase and potion window
+                bool isInOpenerPhase = IsInOpenerPhase(currentTime, potionStatus) && ValidJobIds.Contains(LocalPlayer.ClassJob.RowId);
+                bool isInPotionWindow = IsInPotionWindow(currentTime, potionTimes);
+                bool shouldUseRotationPotion = isInPotionWindow && potionStatus == 0 && ShouldUseRotationPotion();
 
-                // Determine if we should use a potion during rotation
-                bool shouldUseRotationPotion = isInPotionWindow &&
-                                               RotationSkills.Any(action => CanWeave(action));
-
-                // Exit early if potion usage is disabled or we're not in combat
-                if (!IsEnabled(CustomComboPreset.MindPotion) || !InCombat() || GetItemStatus(mindPotion) != 0)
-                    return actionID;
-
-                // Check if we should only use in raid and if we're in a raid
-                bool isInRaid = !IsEnabled(CustomComboPreset.UsePotionOnlyInRaid) || IsInRaid();
-
-
-                uint[] validIds = { 24, 28, 40, 33 };
-
-
-                // Check job-specific conditions and decide on potion use
-                if (isInRaid && validIds.Contains(LocalPlayer.ClassJob.RowId) && CanWeave(ActionWatching.LastAction))
+                // Check combat status and potion status to decide on early exit
+                if (!InCombat() && potionStatus != 0)
                 {
-                    if (isOpenerPhase || shouldUseRotationPotion)
-                    {
-                        UsePotion(mindPotion);
-                    }
+                    return actionID;
+                }
+
+                // Use the potion if we meet the conditions
+                if (isInOpenerPhase || shouldUseRotationPotion)
+                {
+                    UsePotion(mindPotion);
                 }
 
                 return actionID;
             }
         }
         #endregion
-
         #endregion
     }
 }
