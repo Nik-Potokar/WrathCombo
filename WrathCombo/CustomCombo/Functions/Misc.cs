@@ -50,9 +50,6 @@ namespace WrathCombo.CustomComboNS.Functions
 
             public static string JobIDToName(byte key)
             {
-                if (key == 70)
-                    return "Items & Potions";
-
                 if (key == 0)
                     return "General/Multiple Jobs";
 

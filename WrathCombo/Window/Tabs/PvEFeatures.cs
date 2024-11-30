@@ -127,6 +127,15 @@ namespace WrathCombo.Window.Tabs
                                     }
                                 }
 
+                                if (groupedPresets[OpenJob].Any(x => PresetStorage.IsPotion(x.Preset)))
+                                {
+                                    if (ImGui.BeginTabItem("Items & Potions"))
+                                    {
+                                        DrawPotionContents(OpenJob);
+                                        ImGui.EndTabItem();
+                                    }
+                                }
+
                                 ImGui.EndTabBar();
                             }
                         }
@@ -149,6 +158,17 @@ namespace WrathCombo.Window.Tabs
             }
         }
 
+        private static void DrawPotionContents(string jobName)
+        {
+            foreach (var (preset, info) in groupedPresets[jobName].Where(x => PresetStorage.IsPotion(x.Preset)))
+            {
+                int i = -1;
+                InfoBox presetBox = new() { Color = Colors.Grey, BorderThickness = 1f, CurveRadius = 8f, ContentsAction = () => { Presets.DrawPreset(preset, info, ref i); } };
+                presetBox.Draw();
+                ImGuiHelpers.ScaledDummy(12.0f);
+            }
+        }
+
         internal static void DrawHeadingContents(string jobName, int i)
         {
             if (!Messages.PrintBLUMessage(jobName)) return;
@@ -156,7 +176,8 @@ namespace WrathCombo.Window.Tabs
             foreach (var (preset, info) in groupedPresets[jobName].Where(x => !PresetStorage.IsPvP(x.Preset) &&
                                                                                 !PresetStorage.IsVariant(x.Preset) &&
                                                                                 !PresetStorage.IsBozja(x.Preset) &&
-                                                                                !PresetStorage.IsEureka(x.Preset)))
+                                                                                !PresetStorage.IsEureka(x.Preset) &&
+                                                                                !PresetStorage.IsPotion(x.Preset)))
             {
                 InfoBox presetBox = new() { Color = Colors.Grey, BorderThickness = 2f.Scale(), ContentsOffset = 5f.Scale(), ContentsAction = () => { Presets.DrawPreset(preset, info, ref i); } };
 

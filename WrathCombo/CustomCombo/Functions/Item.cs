@@ -4,6 +4,8 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using System.Collections.Generic;
 using System;
 using WrathCombo.Data;
+using ECommons.DalamudServices;
+using WrathCombo.Combos.PvE;
 
 namespace WrathCombo.CustomComboNS.Functions
 {
@@ -153,6 +155,8 @@ namespace WrathCombo.CustomComboNS.Functions
 
             if (canWeaveWeaponskill || canWeaveSpell)
             {
+                Svc.Log.Debug($"USE ITEM FUNCTION WORKS");
+
                 return ItemManager.UseItem(itemID);
             }
 

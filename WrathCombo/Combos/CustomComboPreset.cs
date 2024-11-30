@@ -2,7 +2,6 @@
 using WrathCombo.Attributes;
 using WrathCombo.Combos.PvE;
 using WrathCombo.Combos.PvP;
-using Item = WrathCombo.Combos.PvE.Item;
 
 namespace WrathCombo.Combos
 {
@@ -166,26 +165,31 @@ namespace WrathCombo.Combos
         #endregion
 
         #region Potions
-        [CustomComboInfo("Potion Menu", "Add Potion ID's for each of the roles.", Item.JobID)]
+        [Potion]
+        [CustomComboInfo("Potion Menu", "Add Potion ID's for each of the roles.", All.JobID)]
         Potion_Menu = 10000094,
 
+        [Potion]
         [ParentCombo(Potion_Menu)]
-        [CustomComboInfo("Use only in raid", "Uses potions only in 8 man parties.", Item.JobID)]
+        [CustomComboInfo("Use only in raid", "Uses potions only in 8 man parties.", All.JobID)]
         UsePotionOnlyInRaid = 100000121,
 
+        [Potion]
         [ParentCombo(Potion_Menu)]
         [ConflictingCombos(PotionAllowUnbuffed)]
-        [CustomComboInfo("Use Potions ONLY in buff windows", "Aligns potion usage with 2 minute burst windows.", Item.JobID)]
+        [CustomComboInfo("Use Potions ONLY in buff windows", "Aligns potion usage with 2 minute burst windows.", All.JobID)]
         PotionOnlyOnBuffs = 100000122,
 
+        [Potion]
         [ParentCombo(Potion_Menu)]
         [ConflictingCombos(PotionOnlyOnBuffs)]
-        [CustomComboInfo("Allow Unbuffed Potion", "Allows the use of the unbuffed potion - Great for shorter fights aka non-ultimate.", Item.JobID)]
+        [CustomComboInfo("Allow Unbuffed Potion", "Allows the use of the unbuffed potion - Great for shorter fights aka non-ultimate.", All.JobID)]
         PotionAllowUnbuffed = 100000123,
 
+        [Potion]
         [ParentCombo(Potion_Menu)]
         [ConflictingCombos(PotionOnlyOnBuffs, PotionAllowUnbuffed)]
-        [CustomComboInfo("Custom Potion Time", "Allows you to customize when to use the potion. Time is in seconds + 30sec leeway range.", Item.JobID)]
+        [CustomComboInfo("Custom Potion Time", "Allows you to customize when to use the potion. Time is in seconds + 30sec leeway range.", All.JobID)]
         PotionCustomTime = 100000124,
 
         /*
@@ -195,23 +199,27 @@ namespace WrathCombo.Combos
         CustomPotionTime = 100000124,
         */
         // Strength Potions
+        [Potion]
         [ParentCombo(Potion_Menu)]
-        [CustomComboInfo("Strength Potion", "Applies to all STR Potion Roles.", Item.JobID)]
+        [CustomComboInfo("Strength Potion", "Applies to all STR Potion Roles.", All.JobID)]
         StrengthPotion = 10000095,
 
         // Dexterity Potions
+        [Potion]
         [ParentCombo(Potion_Menu)]
-        [CustomComboInfo("Dexterity Potion", "Applies to all DEX Potion Roles.", Item.JobID)]
+        [CustomComboInfo("Dexterity Potion", "Applies to all DEX Potion Roles.", All.JobID)]
         DexterityPotion = 10000102,
 
         // Intelligence Potions
+        [Potion]
         [ParentCombo(Potion_Menu)]
-        [CustomComboInfo("Intelligence Potion", "Applies to all INT Potion Roles.", Item.JobID)]
+        [CustomComboInfo("Intelligence Potion", "Applies to all INT Potion Roles.", All.JobID)]
         IntelligencePotion = 10000110,
 
         // Mind Potions
+        [Potion]
         [ParentCombo(Potion_Menu)]
-        [CustomComboInfo("Mind Potion", "Applies to all MND Potion Roles.", Item.JobID)]
+        [CustomComboInfo("Mind Potion", "Applies to all MND Potion Roles.", All.JobID)]
         MindPotion = 10000116,
 
         #endregion
@@ -5437,9 +5445,14 @@ namespace WrathCombo.Combos
         [CustomComboInfo("Wreath of Fire (Elemental Weave) Option", "Adds Wreath of Fire to Burst Mode when the target is under Guard status.", BLM.JobID)]
         BLMPvP_BurstMode_WreathOfFire = 112006,
 
+        [ParentCombo(BLMPvP_BurstMode_WreathOfFire)]
+        [PvPCustomCombo]
+        [CustomComboInfo("Wreath of Fire (Elemental Weave) Execute Option", "Adds Wreath of Fire to Burst Mode when the target is under selected %", BLM.JobID)]
+        BLMPvP_BurstMode_WreathOfFireExecute = 112010,
+
         [ParentCombo(BLMPvP_BurstMode)]
         [PvPCustomCombo]
-        [CustomComboInfo("Wreath of Ice (Elemental Weave) Option", "Adds Wreath of Fire to Burst Mode when the target is under Guard status.", BLM.JobID)]
+        [CustomComboInfo("Wreath of Ice (Elemental Weave) Option", "Adds Wreath of Ice to Burst Mode when player is below set threshold", BLM.JobID)]
         BLMPvP_BurstMode_WreathOfIce = 112007,
 
         [ParentCombo(BLMPvP_BurstMode)]
@@ -5452,9 +5465,10 @@ namespace WrathCombo.Combos
         [CustomComboInfo("Frost Star Option", "Adds Frost Star to Burst Mode.", BLM.JobID)]
         BLMPvP_BurstMode_FrostStar = 112009,
 
-        // Last value = 112009
+        // Last value = 112010
 
         #endregion
+
 
         #region BARD
         [PvPCustomCombo]

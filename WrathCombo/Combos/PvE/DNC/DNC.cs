@@ -52,7 +52,13 @@ namespace WrathCombo.Combos.PvE
             CuringWaltz = 16015,
             LastDance = 36983,
             FinishingMove = 36984,
-            DanceOfTheDawn = 36985;
+            DanceOfTheDawn = 36985,
+            // Steps
+            RedStep = 15999,
+            BlueStep = 16000,
+            GreenStep = 16001,
+            YellowStep = 16002;
+
 
         #endregion
 
