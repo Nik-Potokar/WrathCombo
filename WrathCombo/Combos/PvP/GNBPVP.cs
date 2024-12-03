@@ -92,7 +92,7 @@ namespace WrathCombo.Combos.PvP
                         }
 
                         //Fated Circle and Followup
-                        if (IsEnabled(CustomComboPreset.GNBPvP_FatedCircle))
+                        if (IsEnabled(CustomComboPreset.GNBPvP_FatedCircle) && GetTargetDistance() <= 5)
                         {
                             if (ActionReady(FatedCircle) && HasEffect(Buffs.NoMercy) && OriginalHook(Continuation) == Continuation)
                                 return FatedCircle;

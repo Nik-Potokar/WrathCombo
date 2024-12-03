@@ -95,6 +95,9 @@ namespace WrathCombo.Combos.PvP
 
                         if (IsEnabled(CustomComboPreset.BLMPvP_BurstMode_Paradox) && HasEffect(Buffs.Paradox))
                             return Paradox;
+
+                        if (IsMoving)
+                            return OriginalHook(Blizzard);
                     }
 
                 }

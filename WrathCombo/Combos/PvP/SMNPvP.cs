@@ -60,15 +60,17 @@ namespace WrathCombo.Combos.PvP
                     int radiantThreshold = PluginConfiguration.GetCustomIntValue(Config.SMNPvP_RadiantAegisThreshold);
                     #endregion
 
+                    // Radiant Aegis
+                    if (IsEnabled(CustomComboPreset.SMNPvP_BurstMode_RadiantAegis) &&
+                        IsOffCooldown(RadiantAegis) && playerHP <= radiantThreshold)
+                        return RadiantAegis;
+
                     if (!PvPCommon.IsImmuneToDamage())
                     {
-                        if (canWeave)
-                        {
-                            // Radiant Aegis
-                            if (IsEnabled(CustomComboPreset.SMNPvP_BurstMode_RadiantAegis) &&
-                                IsOffCooldown(RadiantAegis) && playerHP <= radiantThreshold)
-                                return RadiantAegis;
-                        }
+                        // Garuda (check Slipstream cooldown)
+                        if (IsEnabled(CustomComboPreset.SMNPvP_BurstMode_Slipstream) && IsOffCooldown(Slipstream) && !IsMoving)
+                            return Slipstream;
+
                         // Phoenix & Bahamut bursts
                         if (IsEnabled(CustomComboPreset.SMNPvP_BurstMode_BrandofPurgatory) && phoenixBurst && IsOffCooldown(BrandofPurgatory))
                             return BrandofPurgatory;
@@ -90,9 +92,6 @@ namespace WrathCombo.Combos.PvP
                         if (IsEnabled(CustomComboPreset.SMNPvP_BurstMode_MountainBuster) && IsOffCooldown(MountainBuster) && InActionRange(MountainBuster))
                             return MountainBuster;
 
-                        // Garuda (check Slipstream cooldown)
-                        if (IsEnabled(CustomComboPreset.SMNPvP_BurstMode_Slipstream) && IsOffCooldown(Slipstream) && !IsMoving)
-                            return Slipstream;
                     }
                 }
 

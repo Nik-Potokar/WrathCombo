@@ -69,7 +69,7 @@ namespace WrathCombo.Combos.PvP
                             if (IsEnabled(CustomComboPreset.DRKPvP_SaltAndDarkness) && HasEffect(Buffs.SaltedEarthDMG) && ActionReady(SaltAndDarkness))
                                 return OriginalHook(SaltAndDarkness);
 
-                            if (IsEnabled(CustomComboPreset.DRKPvP_Shadowbringer) && !HasEffect(Buffs.Blackblood) && (HasEffect(Buffs.DarkArts) || PlayerHealthPercentageHp() >= shadowBringerThreshold))
+                            if (IsEnabled(CustomComboPreset.DRKPvP_Shadowbringer) && !HasEffect(Buffs.Blackblood) && (HasEffect(Buffs.DarkArts) || PlayerHealthPercentageHp() >= shadowBringerThreshold) || EnemyHealthCurrentHp() <= 6000)
                                 return OriginalHook(Shadowbringer);
                         }
 

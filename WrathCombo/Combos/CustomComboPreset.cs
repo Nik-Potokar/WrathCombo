@@ -5512,8 +5512,7 @@ namespace WrathCombo.Combos
         BRDPvP_BlastArrow = 113003,
 
         [PvPCustomCombo]
-        [ParentCombo(BRDPvP_BurstMode)]
-        [CustomComboInfo("Harmonic Arrow Option", "Adds Harmonic Arrow to Burst Mode. Will use it at set number of charges AND when target is below 12000 health. ", BRD.JobID)]
+        [CustomComboInfo("Harmonic Arrow Option", "Adds Harmonic Arrow to Burst Mode. Will use it at set number of charges AND when target is below the health threshold per charge for execute. ", BRD.JobID)]
         BRDPvP_HarmonicArrow = 113004,
 
         [PvPCustomCombo]
